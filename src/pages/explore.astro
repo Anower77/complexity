@@ -1,0 +1,164 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import Badge from '@/components/ui/Badge.astro';
+import { TOPICS, CATEGORIES, type TopicCategory } from '@/data/topics';
+import { formatPath } from '@/lib/utilities/url';
+import { ArrowRight, BookOpen, Layers, Terminal, Sparkles, Filter, CheckCircle2 } from 'lucide-react';
+
+const breadcrumbs = [
+  { label: 'Explore Topics' }
+];
+---
+
+<BaseLayout
+  title="Explore Engineering Topics — Complexity"
+  description="Comprehensive directory of systems engineering, backend infrastructure, operating system runtimes, and distributed architecture topics."
+>
+  <div class="max-w-layout mx-auto px-4 sm:px-6 py-10">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <!-- Header -->
+    <header class="mb-12 pb-8 border-b border-border-subtle">
+      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surface-elevated border border-border-subtle font-mono text-[11px] text-text-muted mb-4">
+        <Layers className="w-3.5 h-3.5 text-brand" />
+        <span>TOPIC DIRECTORY</span>
+      </div>
+
+      <h1 class="font-editorial text-4xl sm:text-5xl font-bold text-text-primary tracking-tight mb-4">
+        Explore Engineering Concepts
+      </h1>
+
+      <p class="text-base sm:text-lg text-text-secondary max-w-3xl font-technical leading-relaxed">
+        Browse our open index of backend engineering topics. Every concept is analyzed down to its mechanical foundation: kernel interrupts, socket state machines, disk I/O, and distributed consistency.
+      </p>
+
+      <div class="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-border-subtle/60 text-xs font-mono text-text-muted">
+        <div>
+          <span class="text-text-primary font-bold">{TOPICS.length}</span> Topics Indexed
+        </div>
+        <span class="text-border-subtle">•</span>
+        <div>
+          <span class="text-emerald-500 font-bold">{CATEGORIES.length}</span> Engineering Domains
+        </div>
+        <span class="text-border-subtle">•</span>
+        <div>
+          <span class="text-brand font-bold">100%</span> Free & Open Access
+        </div>
+      </div>
+    </header>
+
+    <!-- Grouped Category Sections -->
+    <div class="space-y-16">
+      {CATEGORIES.map((category) => {
+        const categoryTopics = TOPICS.filter((t) => t.category === category.id);
+        if (categoryTopics.length === 0) return null;
+
+        return (
+          <section id={category.id} class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-4 border-b border-border-subtle">
+              <div>
+                <span class="font-mono text-xs font-bold text-brand uppercase tracking-wider block mb-1">
+                  DOMAIN
+                </span>
+                <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary">
+                  {category.label}
+                </h2>
+                <p class="text-xs sm:text-sm text-text-secondary font-technical mt-1">
+                  {category.description}
+                </p>
+              </div>
+
+              <span class="font-mono text-xs text-text-muted whitespace-nowrap">
+                {categoryTopics.length} {categoryTopics.length === 1 ? 'concept' : 'concepts'}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categoryTopics.map((topic) => {
+                const isPublished = topic.status === 'published';
+                const difficultyVariant = {
+                  Beginner: 'success',
+                  Intermediate: 'warning',
+                  Advanced: 'danger'
+                }[topic.difficulty] as 'success' | 'warning' | 'danger';
+
+                return (
+                  <div class="rounded-lg border border-border-subtle bg-surface p-6 hover:border-brand/40 transition-all flex flex-col justify-between glow-card">
+                    <div class="space-y-3">
+                      <div class="flex items-center justify-between">
+                        <Badge variant={difficultyVariant} size="sm">
+                          {topic.difficulty.toUpperCase()}
+                        </Badge>
+                        {isPublished ? (
+                          <span class="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-semibold">
+                            GUIDE READY
+                          </span>
+                        ) : (
+                          <span class="font-mono text-[10px] text-text-muted bg-surface-elevated px-2 py-0.5 rounded border border-border-subtle">
+                            ROADMAP
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 class="font-editorial text-xl font-bold text-text-primary">
+                        {topic.title}
+                      </h3>
+
+                      <p class="text-xs text-text-secondary font-technical leading-relaxed">
+                        {topic.shortDescription}
+                      </p>
+
+                      {topic.prerequisites.length > 0 && (
+                        <div class="pt-3 border-t border-border-subtle text-[11px] font-mono text-text-muted">
+                          <span className="text-text-secondary">Prerequisites:</span>{' '}
+                          {topic.prerequisites.join(', ')}
+                        </div>
+                      )}
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-border-subtle flex items-center justify-between">
+                      {isPublished && topic.articleUrl ? (
+                        <a
+                          href={formatPath(topic.articleUrl)}
+                          class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-brand hover:underline"
+                        >
+                          <span>Read Technical Guide</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </a>
+                      ) : (
+                        <span class="text-[11px] font-mono text-text-muted">
+                          Planned in Upcoming Release
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+
+    <!-- Bottom Structured Path Callout -->
+    <div class="mt-20 p-6 sm:p-8 rounded-lg border border-border-subtle bg-surface-elevated/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <div class="space-y-1">
+        <h3 class="font-editorial text-xl font-bold text-text-primary">
+          Prefer a connected visual learning journey?
+        </h3>
+        <p class="text-xs sm:text-sm text-text-secondary font-technical">
+          Explore our interactive Knowledge Graph and sequential 6-phase learning path.
+        </p>
+      </div>
+
+      <a
+        href={formatPath('/path')}
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-brand text-white font-mono text-xs font-semibold hover:bg-brand-hover transition-colors whitespace-nowrap shadow-sm"
+      >
+        <span>View Structured Path</span>
+        <ArrowRight className="w-3.5 h-3.5" />
+      </a>
+    </div>
+  </div>
+</BaseLayout>

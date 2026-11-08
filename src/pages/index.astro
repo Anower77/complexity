@@ -1,18 +1,32 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SystemFlowSimulator from '@/components/visualization/SystemFlowSimulator';
+import InteractiveKnowledgeMap from '@/components/visualization/InteractiveKnowledgeMap';
 import CurriculumFlowGraph from '@/components/visualization/CurriculumFlowGraph';
 import WorkflowDiagram from '@/components/visualization/WorkflowDiagram';
 import Button from '@/components/ui/Button.astro';
 import Badge from '@/components/ui/Badge.astro';
+import { TOPICS, CATEGORIES } from '@/data/topics';
 import { formatPath } from '@/lib/utilities/url';
-import { ArrowRight, BookOpen, Clock, Sparkles, Terminal, ShieldAlert, Cpu, Network, CheckCircle2 } from 'lucide-react';
+import {
+  ArrowRight,
+  Clock,
+  Sparkles,
+  Layers,
+  Cpu,
+  Network,
+  Database,
+  ShieldCheck,
+  Zap,
+  Terminal,
+  Server
+} from 'lucide-react';
 
 const featuredArticles = [
   {
     number: '01.01',
     title: 'Introduction to Client-Server Architecture',
-    description: 'Deconstructing the foundational communication paradigm of distributed software. Socket allocations, state invariants, and physical boundaries.',
+    description: 'Deconstructing the foundational communication paradigm of distributed software. Socket allocations, state invariants, and physical network boundaries.',
     readingTime: '7 min',
     interactiveType: 'Interactive Simulator',
     status: 'published',
@@ -21,53 +35,125 @@ const featuredArticles = [
   {
     number: '01.02',
     title: 'Request Lifecycle & Transport Protocols',
-    description: 'Tracing a network packet from socket allocation down through TCP handshake, TLS negotiation, and HTTP/2 stream multiplexing.',
+    description: 'Tracing a network packet from socket allocation down through TCP handshake, TLS 1.3 negotiation, and HTTP/2 stream multiplexing.',
     readingTime: '9 min',
-    interactiveType: 'Workflow Diagram',
+    interactiveType: 'Live Workflow Diagram',
     status: 'published',
     url: formatPath('/courses/system-architecture-fundamentals/client-server-architecture/request-lifecycle-and-protocols')
   },
   {
     number: '01.03',
     title: 'DNS: How Domain Names Find Servers',
-    description: 'Hierarchical tree resolution, recursive resolvers, root name servers, anycast routing, and TTL caching failure modes.',
+    description: 'Hierarchical tree resolution, recursive resolvers, root name servers, Anycast routing, and TTL caching failure modes.',
     readingTime: '8 min',
-    interactiveType: 'Live Diagram',
+    interactiveType: 'Interactive Diagram',
     status: 'published',
     url: formatPath('/courses/system-architecture-fundamentals/network-fundamentals/dns-resolution-and-sockets')
+  }
+];
+
+const featuredTopics = [
+  {
+    title: 'Linux Epoll & File Descriptors',
+    domain: 'Linux & OS Runtime',
+    difficulty: 'Intermediate',
+    desc: 'Why select() and poll() scale with O(N) complexity and how the Linux kernel solved the C10K concurrency bottleneck with epoll event readiness.',
+    prereq: 'Client-Server Architecture',
+    slug: 'linux-epoll'
+  },
+  {
+    title: 'Redis: In-Memory Caching & Eviction',
+    domain: 'Storage & Caching',
+    difficulty: 'Intermediate',
+    desc: 'Single-threaded event loops, LRU/LFU memory eviction algorithms, and thundering herd mitigation under extreme traffic surges.',
+    prereq: 'Reverse Proxies',
+    slug: 'redis-caching'
+  },
+  {
+    title: 'Kafka: Distributed Commit Logs',
+    domain: 'Distributed Systems',
+    difficulty: 'Advanced',
+    desc: 'Zero-copy sequential disk I/O, OS page cache exploitation, consumer group rebalancing, and partition leader election.',
+    prereq: 'Asynchronous Queues',
+    slug: 'kafka-commit-log'
+  },
+  {
+    title: 'Rate Limiting Algorithms',
+    domain: 'Production & Reliability',
+    difficulty: 'Advanced',
+    desc: 'Mathematical comparison of Token Bucket, Leaky Bucket, and Sliding Window Log algorithms for high-throughput API gateway protection.',
+    prereq: 'Redis Caching',
+    slug: 'rate-limiting'
+  },
+  {
+    title: 'Circuit Breakers & Cascading Outages',
+    domain: 'Production & Reliability',
+    difficulty: 'Advanced',
+    desc: 'Preventing catastrophic retry storms when downstream microservices degrade, with automated three-state failure detection.',
+    prereq: 'Async Message Queues',
+    slug: 'circuit-breakers'
+  },
+  {
+    title: 'Docker Internals: Namespaces & Cgroups',
+    domain: 'Linux & OS Runtime',
+    difficulty: 'Intermediate',
+    desc: 'How container engines create the illusion of isolated operating systems using Linux PID/mount namespaces, cgroups, and layered file systems.',
+    prereq: 'Linux Epoll',
+    slug: 'container-runtimes'
+  }
+];
+
+const caseStudiesPreview = [
+  {
+    title: 'High-Throughput URL Shortener',
+    difficulty: 'Intermediate',
+    scale: '100,000 QPS (Read-Heavy)',
+    desc: 'Base62 encoding, distributed counter ranges, multi-tier Redis caching, and B-Tree index guarantees.'
+  },
+  {
+    title: 'Real-Time Chat & Direct Messaging',
+    difficulty: 'Advanced',
+    scale: '500,000 Concurrent Sockets',
+    desc: 'Stateful WebSocket connection gateways, Redis Pub/Sub multiplexers, presence heartbeats, and Cassandra archives.'
+  },
+  {
+    title: 'Adaptive Bitrate Video Streaming',
+    difficulty: 'Advanced',
+    scale: '2,000,000 Concurrent Streams',
+    desc: 'Chunked HLS media segmentation, distributed transcoding DAGs, multi-tier edge CDN caching, and origin shield protection.'
   }
 ];
 ---
 
 <BaseLayout
-  title="Complexity — Backend System Design From First Principles"
-  description="Deconstruct backend infrastructure, network lifecycles, and distributed architecture through interactive flow diagrams and first-principles technical guides."
+  title="Complexity — Open Engineering Publication & System Architecture Reference"
+  description="Understand the systems behind modern software. Deconstruct backend infrastructure, network lifecycles, and distributed architecture through interactive flow diagrams and first-principles guides."
 >
-  <!-- Hero Section with Interactive System Flow Simulator -->
+  <!-- Section 2 — Hero -->
   <section class="border-b border-border-subtle bg-surface/40 pt-16 pb-20 px-4 sm:px-6 relative overflow-hidden">
     <div class="max-w-layout mx-auto">
       <div class="max-w-3xl mb-12">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-subtle border border-brand-border text-brand text-xs font-mono mb-6">
           <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span>
-          <span>BACKEND SYSTEM DESIGN & DISTRIBUTED SYSTEMS</span>
+          <span>OPEN ENGINEERING PUBLICATION & SYSTEM DESIGN REFERENCE</span>
         </div>
 
         <h1 class="font-editorial text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-text-primary leading-[1.08] mb-6">
-          Understand how systems work, <span class="italic text-brand">why they break</span>, and how to scale them.
+          Understand the systems behind <span class="italic text-brand">modern software</span>.
         </h1>
 
         <p class="font-technical text-lg sm:text-xl text-text-secondary leading-relaxed mb-8 max-w-2xl">
-          Complexity is an open technical publication and engineering reference. We replace hand-wavy summaries with observable architecture flow diagrams, socket-level simulations, and battle-tested failure scenarios.
+          Explore the engineering concepts, infrastructure, and architecture patterns that power real-world applications. Learn how components connect, how systems scale, and why engineering decisions matter.
         </p>
 
         <div class="flex items-center flex-wrap gap-4">
-          <Button href={formatPath('/path')} variant="primary" size="lg">
-            <span>Explore Structured Path</span>
+          <Button href={formatPath('/explore')} variant="primary" size="lg">
+            <span>Explore Engineering Topics</span>
             <ArrowRight class="w-4 h-4" />
           </Button>
 
-          <Button href={formatPath('/articles')} variant="secondary" size="lg">
-            <span>Browse All Articles</span>
+          <Button href={formatPath('/path')} variant="secondary" size="lg">
+            <span>Explore Learning Paths</span>
           </Button>
         </div>
       </div>
@@ -79,15 +165,35 @@ const featuredArticles = [
     </div>
   </section>
 
-  <!-- Interactive Curriculum Flow & Learning Dependency Section -->
+  <!-- Section 3 — Interactive Engineering Knowledge Map -->
   <section class="border-b border-border-subtle py-16 sm:py-24 px-4 sm:px-6 bg-surface">
+    <div class="max-w-layout mx-auto">
+      <div class="max-w-3xl mb-10">
+        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
+          KNOWLEDGE GRAPH
+        </div>
+        <h2 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary mb-4">
+          Interactive Architecture Map
+        </h2>
+        <p class="font-technical text-base text-text-secondary leading-relaxed">
+          Trace how fundamental networking primitives connect to operating system syscalls, distributed caches, and large-scale message brokers. Select any concept to explore its prerequisites and downstream dependencies.
+        </p>
+      </div>
+
+      <!-- Interactive Knowledge Map Component -->
+      <InteractiveKnowledgeMap client:visible />
+    </div>
+  </section>
+
+  <!-- Section 4 — Learning Paths Progression -->
+  <section class="border-b border-border-subtle py-16 sm:py-24 px-4 sm:px-6 bg-surface/40">
     <div class="max-w-layout mx-auto">
       <div class="max-w-3xl mb-12">
         <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
           PROGRESSIVE CURRICULUM
         </div>
         <h2 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary mb-4">
-          Structured Learning Journey
+          Sequential Learning Paths
         </h2>
         <p class="font-technical text-base text-text-secondary leading-relaxed">
           Systems engineering cannot be mastered through disconnected summaries. Every phase builds upon the physical invariants and operating system primitives mastered in the previous phase.
@@ -99,7 +205,64 @@ const featuredArticles = [
     </div>
   </section>
 
-  <!-- Dynamic Request Workflow Simulation Showcase -->
+  <!-- Section 5 — Featured Engineering Topics -->
+  <section class="border-b border-border-subtle py-16 sm:py-24 px-4 sm:px-6 max-w-layout mx-auto">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+      <div>
+        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
+          CONCEPTS & INVARIANTS
+        </div>
+        <h2 class="font-editorial text-3xl sm:text-4xl font-bold text-text-primary">
+          Featured Engineering Topics
+        </h2>
+      </div>
+
+      <a
+        href={formatPath('/explore')}
+        class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand hover:underline font-technical"
+      >
+        <span>View all {TOPICS.length} topics in directory</span>
+        <ArrowRight class="w-3.5 h-3.5" />
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {featuredTopics.map((topic) => (
+        <a
+          href={formatPath('/explore')}
+          class="group rounded-lg border border-border-subtle bg-surface p-6 hover:border-brand/40 hover:bg-surface-elevated/40 transition-all flex flex-col justify-between glow-card"
+        >
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[11px] text-text-muted">
+                {topic.domain}
+              </span>
+              <Badge variant={topic.difficulty === 'Intermediate' ? 'warning' : 'danger'} size="sm">
+                {topic.difficulty.toUpperCase()}
+              </Badge>
+            </div>
+
+            <h3 class="font-editorial text-xl font-bold text-text-primary group-hover:text-brand transition-colors">
+              {topic.title}
+            </h3>
+
+            <p class="text-xs text-text-secondary font-technical leading-relaxed">
+              {topic.desc}
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-border-subtle flex items-center justify-between text-[11px] font-mono text-text-muted">
+            <span>Requires: {topic.prereq}</span>
+            <span class="text-brand font-semibold group-hover:translate-x-1 transition-transform">
+              Inspect &rarr;
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Section 6 — Dynamic Request Workflow Simulation Showcase -->
   <section class="border-b border-border-subtle py-16 sm:py-24 px-4 sm:px-6 bg-surface/50">
     <div class="max-w-layout mx-auto">
       <div class="max-w-3xl mb-10">
@@ -119,8 +282,8 @@ const featuredArticles = [
     </div>
   </section>
 
-  <!-- Featured System Design Articles -->
-  <section class="py-16 sm:py-24 px-4 sm:px-6 max-w-layout mx-auto">
+  <!-- Section 7 — Latest Articles & Deep Dives -->
+  <section class="border-b border-border-subtle py-16 sm:py-24 px-4 sm:px-6 max-w-layout mx-auto">
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
       <div>
         <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
@@ -135,7 +298,7 @@ const featuredArticles = [
         href={formatPath('/articles')}
         class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand hover:underline font-technical"
       >
-        <span>View all articles & roadmap</span>
+        <span>View all 10 guides in index</span>
         <ArrowRight class="w-3.5 h-3.5" />
       </a>
     </div>
@@ -179,8 +342,63 @@ const featuredArticles = [
     </div>
   </section>
 
+  <!-- Section 8 — Engineering Case Studies -->
+  <section class="border-b border-border-subtle py-16 sm:py-24 px-4 sm:px-6 max-w-layout mx-auto">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+      <div>
+        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
+          SYSTEM BLUEPRINTS
+        </div>
+        <h2 class="font-editorial text-3xl sm:text-4xl font-bold text-text-primary">
+          Production Architecture Case Studies
+        </h2>
+      </div>
+
+      <a
+        href={formatPath('/system-design')}
+        class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand hover:underline font-technical"
+      >
+        <span>Explore all system design blueprints</span>
+        <ArrowRight class="w-3.5 h-3.5" />
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {caseStudiesPreview.map((study) => (
+        <a
+          href={formatPath('/system-design')}
+          class="group rounded-lg border border-border-subtle bg-surface p-6 hover:border-brand/40 hover:bg-surface-elevated/40 transition-all flex flex-col justify-between glow-card"
+        >
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <Badge variant={study.difficulty === 'Intermediate' ? 'warning' : 'danger'} size="sm">
+                {study.difficulty.toUpperCase()}
+              </Badge>
+              <span class="font-mono text-[10px] text-text-muted">
+                {study.scale}
+              </span>
+            </div>
+
+            <h3 class="font-editorial text-xl font-bold text-text-primary group-hover:text-brand transition-colors">
+              {study.title}
+            </h3>
+
+            <p class="text-xs text-text-secondary font-technical leading-relaxed">
+              {study.desc}
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-border-subtle flex items-center justify-between text-xs font-mono text-brand font-semibold">
+            <span>Inspect Blueprint</span>
+            <ArrowRight class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
   <!-- The Seven Fundamental Questions Manifesto -->
-  <section class="border-t border-border-subtle py-16 sm:py-20 px-4 sm:px-6 bg-surface">
+  <section class="py-16 sm:py-20 px-4 sm:px-6 bg-surface">
     <div class="max-w-layout mx-auto">
       <div class="max-w-2xl mb-12">
         <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
