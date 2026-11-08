@@ -1,0 +1,308 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import TableOfContents from '@/components/navigation/TableOfContents';
+import InfoCallout from '@/components/interactive/InfoCallout.astro';
+import KnowledgeCheck from '@/components/interactive/KnowledgeCheck';
+import WorkflowDiagram from '@/components/visualization/WorkflowDiagram';
+import Badge from '@/components/ui/Badge.astro';
+import { formatPath } from '@/lib/utilities/url';
+import {
+  Clock,
+  ExternalLink,
+  BookOpen,
+  ArrowRight,
+  ShieldCheck,
+  Server,
+  Network,
+  Cpu,
+  Layers,
+  Sparkles,
+  Terminal
+} from 'lucide-react';
+
+const breadcrumbs = [
+  { label: 'Articles & Guides', href: formatPath('/articles') },
+  { label: 'Request Lifecycle & Transport Protocols' }
+];
+
+const headings = [
+  { id: 'journey-of-a-packet', text: '1. Journey of a Network Packet', depth: 2, slug: 'journey-of-a-packet' },
+  { id: 'socket-abstraction', text: '2. The 5-Tuple & Kernel Sockets', depth: 2, slug: 'socket-abstraction' },
+  { id: 'tcp-three-way-handshake', text: '3. TCP Handshake & Connection Overhead', depth: 2, slug: 'tcp-three-way-handshake' },
+  { id: 'tls-negotiation', text: '4. TLS 1.3 Cryptographic Handshake', depth: 2, slug: 'tls-negotiation' },
+  { id: 'http-multiplexing', text: '5. HTTP/1.1 vs HTTP/2 vs HTTP/3', depth: 2, slug: 'http-multiplexing' },
+  { id: 'knowledge-verification', text: '6. Engineering Knowledge Verification', depth: 2, slug: 'knowledge-verification' },
+  { id: 'key-takeaways', text: '7. Key Takeaways & References', depth: 2, slug: 'key-takeaways' }
+];
+---
+
+<BaseLayout
+  title="Request Lifecycle & Transport Protocols — Complexity"
+  description="Tracing a network packet from socket allocation down through TCP handshake, TLS 1.3 negotiation, kernel buffers, and HTTP/2 multiplexing."
+>
+  <div class="max-w-layout mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="mt-4 flex flex-col lg:flex-row gap-8 items-start">
+      <!-- Left Sidebar: Topic Series -->
+      <aside class="hidden lg:block w-64 flex-shrink-0 sticky top-20 space-y-6">
+        <div class="p-4 rounded-lg border border-border-subtle bg-surface">
+          <div class="font-mono text-[10px] text-brand uppercase font-bold tracking-wider mb-2">
+            TOPIC SERIES
+          </div>
+          <h3 class="font-editorial text-base font-bold text-text-primary mb-2">
+            Networking & Architecture
+          </h3>
+          <p class="text-xs text-text-secondary leading-relaxed mb-4">
+            Foundational protocols and transport invariants of distributed software systems.
+          </p>
+
+          <nav class="space-y-1.5 border-t border-border-subtle pt-3 text-xs font-technical">
+            <a
+              href={formatPath('/articles/client-server-architecture')}
+              class="block px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            >
+              01. Client-Server Architecture
+            </a>
+            <a
+              href={formatPath('/articles/request-lifecycle-and-protocols')}
+              class="block px-2.5 py-1.5 rounded bg-brand-subtle text-brand font-semibold border border-brand/20"
+            >
+              02. Request Lifecycle & Protocols
+            </a>
+            <a
+              href={formatPath('/articles/dns-resolution-and-sockets')}
+              class="block px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            >
+              03. DNS & Socket Resolution
+            </a>
+            <a
+              href={formatPath('/articles/kubernetes-services-clusterip-nodeport-loadbalancer')}
+              class="block px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            >
+              04. Kubernetes Services
+            </a>
+          </nav>
+        </div>
+
+        <div class="p-4 rounded-lg border border-border-subtle bg-surface-elevated/40 text-xs">
+          <div class="font-mono text-[10px] text-text-muted uppercase font-bold tracking-wider mb-2">
+            DIAGRAM WORKSPACE
+          </div>
+          <p class="text-text-secondary leading-relaxed mb-3">
+            Simulate or draw network flowcharts in Diagram Studio.
+          </p>
+          <a
+            href={formatPath('/studio')}
+            class="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-brand hover:underline"
+          >
+            <span>Launch Diagram Studio</span>
+            <ArrowRight class="w-3.5 h-3.5" />
+          </a>
+        </div>
+      </aside>
+
+      <!-- Center Column: Primary Reading Canvas -->
+      <article class="flex-1 min-w-0 max-w-content mx-auto">
+        <header class="border-b border-border-subtle pb-8 mb-10">
+          <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="font-mono text-xs font-bold text-brand px-2.5 py-0.5 rounded bg-brand-subtle border border-brand/20">
+              GUIDE 01.02
+            </span>
+            <Badge variant="warning" size="sm">INTERMEDIATE TRANSPORT</Badge>
+            <span class="font-mono text-xs text-text-muted flex items-center gap-1.5">
+              <Clock class="w-3.5 h-3.5" /> 9 min read
+            </span>
+          </div>
+
+          <h1 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary tracking-tight leading-[1.1] mb-6">
+            Request Lifecycle & Transport Protocols
+          </h1>
+
+          <p class="font-technical text-lg sm:text-xl text-text-secondary leading-relaxed mb-6">
+            Tracing a network packet from socket allocation down through TCP handshake, TLS 1.3 negotiation, kernel socket buffers, and HTTP/2 application stream multiplexing.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 text-xs font-mono text-text-muted pt-4 border-t border-border-subtle/60">
+            <div>Author: <span class="text-text-primary font-semibold">Complexity Architecture Staff</span></div>
+            <span>•</span>
+            <div>Verified against: <span class="text-text-primary font-semibold">RFC 793, RFC 8446 & RFC 9113</span></div>
+          </div>
+        </header>
+
+        <!-- Section 1: Journey of a Packet -->
+        <section id="journey-of-a-packet" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            1. Journey of a Network Packet
+          </h2>
+          <p class="font-technical text-base text-text-secondary leading-relaxed mb-6">
+            When an application makes a request, operating system abstractions hide multiple transport layers. Use the interactive workflow diagram below to step through each phase from browser write to server execution:
+          </p>
+
+          <WorkflowDiagram client:visible />
+        </section>
+
+        <!-- Section 2: Socket Abstraction -->
+        <section id="socket-abstraction" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            2. The 5-Tuple & Kernel Sockets
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              On Unix and Linux operating systems, every network connection is exposed as a file descriptor backed by a kernel socket. The OS kernel uniquely identifies every TCP socket connection via the <strong class="text-text-primary">5-tuple</strong>:
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 font-mono text-xs text-center my-4">
+              <div class="p-2.5 rounded bg-surface border border-border-subtle">
+                <div class="text-[10px] text-text-muted uppercase">Protocol</div>
+                <div class="font-bold text-brand mt-1">TCP (6)</div>
+              </div>
+              <div class="p-2.5 rounded bg-surface border border-border-subtle">
+                <div class="text-[10px] text-text-muted uppercase">Source IP</div>
+                <div class="font-bold text-text-primary mt-1">198.51.100.12</div>
+              </div>
+              <div class="p-2.5 rounded bg-surface border border-border-subtle">
+                <div class="text-[10px] text-text-muted uppercase">Source Port</div>
+                <div class="font-bold text-text-primary mt-1">54128</div>
+              </div>
+              <div class="p-2.5 rounded bg-surface border border-border-subtle">
+                <div class="text-[10px] text-text-muted uppercase">Dest IP</div>
+                <div class="font-bold text-text-primary mt-1">203.0.113.80</div>
+              </div>
+              <div class="p-2.5 rounded bg-surface border border-border-subtle">
+                <div class="text-[10px] text-text-muted uppercase">Dest Port</div>
+                <div class="font-bold text-text-primary mt-1">443</div>
+              </div>
+            </div>
+
+            <p>
+              Because the client port is dynamically allocated from the ephemeral port range (`32768–60999` by default on Linux), a single server listening on port 443 can easily sustain tens of thousands of simultaneous connections as long as each client socket has a distinct source port or IP.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 3: TCP Handshake -->
+        <section id="tcp-three-way-handshake" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            3. TCP Handshake & Connection Overhead
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              Before a single byte of HTTP payload can be transmitted, the client and server must agree on initial sequence numbers and window sizes via the three-way handshake:
+            </p>
+            <ol class="list-decimal pl-6 space-y-2">
+              <li><strong class="text-text-primary">SYN:</strong> Client sends an initial sequence number `ISN_c`.</li>
+              <li><strong class="text-text-primary">SYN-ACK:</strong> Server acknowledges with `ACK = ISN_c + 1` and provides its own `ISN_s`.</li>
+              <li><strong class="text-text-primary">ACK:</strong> Client acknowledges `ISN_s + 1`. The socket state transitions to `ESTABLISHED`.</li>
+            </ol>
+
+            <InfoCallout type="warning" title="Latency Penalty (1 RTT)">
+              Every new TCP connection adds at least one full Round Trip Time (RTT) of network latency before any application payload can travel. Across transatlantic links (70ms RTT), establishing a fresh connection before each request creates unacceptable user delay. This is why HTTP persistent connections (`Keep-Alive`) and connection pools are mandatory in production.
+            </InfoCallout>
+          </div>
+        </section>
+
+        <!-- Section 4: TLS 1.3 Negotiation -->
+        <section id="tls-negotiation" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            4. TLS 1.3 Cryptographic Handshake
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              Under TLS 1.2, cryptographic negotiation required two additional round trips. TLS 1.3 reduced this overhead to a single round trip (1-RTT) by combining cryptographic parameter negotiation into the initial ClientHello message using Diffie-Hellman ephemeral key exchange:
+            </p>
+
+            <div class="p-4 rounded-lg bg-surface-elevated border border-border-subtle font-mono text-xs overflow-x-auto my-4 text-text-primary">
+              <pre>{`Client                                              Server
+  │                                                   │
+  │─── ClientHello (Key Share, Cipher Suites) ───────►│
+  │                                                   │ Calculates Shared Secret
+  │                                                   │ Generates Session Keys
+  │◄── ServerHello, Certificate, Finished ────────────│
+  │                                                   │
+  │─── [Encrypted Application Data: GET /api/v1] ────►│ Ready!`}</pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: HTTP Multiplexing -->
+        <section id="http-multiplexing" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            5. HTTP/1.1 vs HTTP/2 vs HTTP/3
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              The application layer protocols evolved specifically to eliminate latency bottlenecks:
+            </p>
+            <ul class="list-disc pl-6 space-y-2">
+              <li>
+                <strong class="text-text-primary">HTTP/1.1:</strong> Sequential pipelining suffered from Head-of-Line (HoL) blocking. If response #1 hung, subsequent responses on that socket were blocked.
+              </li>
+              <li>
+                <strong class="text-text-primary">HTTP/2:</strong> Introduced binary framing and bidirectional stream multiplexing over a single shared TCP socket.
+              </li>
+              <li>
+                <strong class="text-text-primary">HTTP/3 (QUIC):</strong> Replaced TCP with UDP-based QUIC, eliminating transport-layer Head-of-Line blocking when packets are lost.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section 6: Knowledge Check -->
+        <section id="knowledge-verification" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            6. Engineering Knowledge Verification
+          </h2>
+          <KnowledgeCheck
+            client:visible
+            question="Why does HTTP/2 still suffer from Head-of-Line blocking at the TCP transport layer when a single packet is lost on a lossy cellular network?"
+            options={[
+              "Because TCP guarantees in-order byte stream delivery, forcing the kernel to buffer subsequent received packets until the lost segment is retransmitted.",
+              "Because HTTP/2 binary framing does not support stream identifiers when packet loss exceeds 2%.",
+              "Because TLS 1.3 session keys expire immediately upon detecting dropped IP packets.",
+              "Because the Linux kernel closes the socket file descriptor after receiving duplicate ACKs."
+            ]}
+            correctIndex={0}
+            explanation="Even though HTTP/2 multiplexes multiple logical streams over one TCP connection, the underlying TCP stack enforces sequential byte delivery. If one packet drops, all multiplexed HTTP/2 streams on that socket stall until the missing packet is retransmitted. This was the primary motivation for creating HTTP/3 over QUIC/UDP."
+          />
+        </section>
+
+        <!-- Section 7: Key Takeaways -->
+        <section id="key-takeaways" class="mb-12 scroll-mt-20 border-t border-border-subtle pt-8">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            7. Key Takeaways & References
+          </h2>
+          <ul class="list-disc pl-6 space-y-2 text-sm text-text-secondary font-technical mb-8">
+            <li><strong class="text-text-primary">5-Tuple Connection Identity:</strong> Sockets are bound to protocol, source IP/port, and destination IP/port.</li>
+            <li><strong class="text-text-primary">Connection Re-use:</strong> Handshake overhead makes persistent connections and pool reuse essential for low latency.</li>
+            <li><strong class="text-text-primary">Stream Multiplexing:</strong> HTTP/2 interleaves frames over one socket; HTTP/3 eliminates TCP HoL blocking using UDP.</li>
+          </ul>
+
+          <h3 class="font-editorial text-lg font-bold text-text-primary mb-3">
+            Canonical RFC Standards
+          </h3>
+          <ul class="space-y-2 text-xs font-mono text-brand">
+            <li>
+              <a href="https://www.rfc-editor.org/rfc/rfc793" target="_blank" rel="noreferrer" class="hover:underline flex items-center gap-1.5">
+                <span>RFC 793: Transmission Control Protocol Specification</span>
+                <ExternalLink class="w-3 h-3" />
+              </a>
+            </li>
+            <li>
+              <a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noreferrer" class="hover:underline flex items-center gap-1.5">
+                <span>RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3</span>
+                <ExternalLink class="w-3 h-3" />
+              </a>
+            </li>
+          </ul>
+        </section>
+      </article>
+
+      <!-- Right Sidebar: On-page Table of Contents -->
+      <aside class="hidden xl:block w-60 flex-shrink-0 sticky top-20">
+        <TableOfContents client:load items={headings} />
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,300 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import TableOfContents from '@/components/navigation/TableOfContents';
+import InfoCallout from '@/components/interactive/InfoCallout.astro';
+import KnowledgeCheck from '@/components/interactive/KnowledgeCheck';
+import Badge from '@/components/ui/Badge.astro';
+import { formatPath } from '@/lib/utilities/url';
+import {
+  Clock,
+  ExternalLink,
+  BookOpen,
+  ArrowRight,
+  ShieldCheck,
+  Server,
+  Network,
+  Cpu,
+  Layers,
+  Sparkles,
+  Terminal,
+  Globe
+} from 'lucide-react';
+
+const breadcrumbs = [
+  { label: 'Articles & Guides', href: formatPath('/articles') },
+  { label: 'DNS Resolution & Sockets' }
+];
+
+const headings = [
+  { id: 'why-dns-exists', text: '1. Why Do Systems Need DNS?', depth: 2, slug: 'why-dns-exists' },
+  { id: 'hierarchical-tree', text: '2. The Hierarchical Resolution Tree', depth: 2, slug: 'hierarchical-tree' },
+  { id: 'recursive-vs-iterative', text: '3. Recursive vs Iterative Resolution Flow', depth: 2, slug: 'recursive-vs-iterative' },
+  { id: 'ttl-and-caching', text: '4. TTL Caching & Failure Modes', depth: 2, slug: 'ttl-and-caching' },
+  { id: 'os-resolution-syscall', text: '5. Inside the OS: getaddrinfo() & NSSwitch', depth: 2, slug: 'os-resolution-syscall' },
+  { id: 'knowledge-verification', text: '6. Engineering Knowledge Verification', depth: 2, slug: 'knowledge-verification' },
+  { id: 'key-takeaways', text: '7. Key Takeaways & References', depth: 2, slug: 'key-takeaways' }
+];
+---
+
+<BaseLayout
+  title="DNS: How Domain Names Find Servers — Complexity"
+  description="Understanding hierarchical DNS tree resolution, recursive resolvers, root servers, Anycast routing, and TTL caching failure modes."
+>
+  <div class="max-w-layout mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="mt-4 flex flex-col lg:flex-row gap-8 items-start">
+      <!-- Left Sidebar: Topic Series -->
+      <aside class="hidden lg:block w-64 flex-shrink-0 sticky top-20 space-y-6">
+        <div class="p-4 rounded-lg border border-border-subtle bg-surface">
+          <div class="font-mono text-[10px] text-brand uppercase font-bold tracking-wider mb-2">
+            TOPIC SERIES
+          </div>
+          <h3 class="font-editorial text-base font-bold text-text-primary mb-2">
+            Networking & Architecture
+          </h3>
+          <p class="text-xs text-text-secondary leading-relaxed mb-4">
+            Foundational protocols and transport invariants of distributed software systems.
+          </p>
+
+          <nav class="space-y-1.5 border-t border-border-subtle pt-3 text-xs font-technical">
+            <a
+              href={formatPath('/articles/client-server-architecture')}
+              class="block px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            >
+              01. Client-Server Architecture
+            </a>
+            <a
+              href={formatPath('/articles/request-lifecycle-and-protocols')}
+              class="block px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            >
+              02. Request Lifecycle & Protocols
+            </a>
+            <a
+              href={formatPath('/articles/dns-resolution-and-sockets')}
+              class="block px-2.5 py-1.5 rounded bg-brand-subtle text-brand font-semibold border border-brand/20"
+            >
+              03. DNS & Socket Resolution
+            </a>
+            <a
+              href={formatPath('/articles/kubernetes-services-clusterip-nodeport-loadbalancer')}
+              class="block px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            >
+              04. Kubernetes Services
+            </a>
+          </nav>
+        </div>
+
+        <div class="p-4 rounded-lg border border-border-subtle bg-surface-elevated/40 text-xs">
+          <div class="font-mono text-[10px] text-text-muted uppercase font-bold tracking-wider mb-2">
+            DIAGRAM WORKSPACE
+          </div>
+          <p class="text-text-secondary leading-relaxed mb-3">
+            Build a topology map or DNS Anycast flow in Diagram Studio.
+          </p>
+          <a
+            href={formatPath('/studio')}
+            class="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-brand hover:underline"
+          >
+            <span>Launch Diagram Studio</span>
+            <ArrowRight class="w-3.5 h-3.5" />
+          </a>
+        </div>
+      </aside>
+
+      <!-- Center Column: Primary Reading Canvas -->
+      <article class="flex-1 min-w-0 max-w-content mx-auto">
+        <header class="border-b border-border-subtle pb-8 mb-10">
+          <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="font-mono text-xs font-bold text-brand px-2.5 py-0.5 rounded bg-brand-subtle border border-brand/20">
+              GUIDE 01.03
+            </span>
+            <Badge variant="success" size="sm">INFRASTRUCTURE CORE</Badge>
+            <span class="font-mono text-xs text-text-muted flex items-center gap-1.5">
+              <Clock class="w-3.5 h-3.5" /> 8 min read
+            </span>
+          </div>
+
+          <h1 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary tracking-tight leading-[1.1] mb-6">
+            DNS: How Domain Names Find Servers
+          </h1>
+
+          <p class="font-technical text-lg sm:text-xl text-text-secondary leading-relaxed mb-6">
+            Hierarchical tree resolution, recursive resolvers, root nameservers, Anycast routing, and TTL caching failure modes.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 text-xs font-mono text-text-muted pt-4 border-t border-border-subtle/60">
+            <div>Author: <span class="text-text-primary font-semibold">Complexity Architecture Staff</span></div>
+            <span>•</span>
+            <div>Verified against: <span class="text-text-primary font-semibold">RFC 1034 & RFC 1035</span></div>
+          </div>
+        </header>
+
+        <!-- Section 1: Why DNS Exists -->
+        <section id="why-dns-exists" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            1. Why Do Systems Need DNS?
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              Computers communicate across the internet using numeric <strong class="text-text-primary">IP addresses</strong> (e.g. IPv4 `198.51.100.24` or IPv6 `2001:db8::1`).
+            </p>
+            <p>
+              Humans, however, remember names like <code class="font-mono text-sm">complexity.dev</code> or <code class="font-mono text-sm">api.github.com</code>.
+            </p>
+            <p>
+              The <strong class="text-text-primary">Domain Name System (DNS)</strong> is the globally distributed, hierarchical database responsible for translating human-readable domain names into machine-routable IP addresses and service records.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Hierarchical Tree -->
+        <section id="hierarchical-tree" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            2. The Hierarchical Resolution Tree
+          </h2>
+          <p class="font-technical text-base text-text-secondary leading-relaxed mb-6">
+            DNS is organized as an inverted tree read from right to left:
+          </p>
+
+          <div class="p-4 rounded-lg bg-surface-elevated border border-border-subtle font-mono text-xs overflow-x-auto my-6 text-text-primary">
+            <pre>{`                      [ Root Level (.) ]
+                              │
+            ┌─────────────────┼─────────────────┐
+            ▼                 ▼                 ▼
+        [ .com ]           [ .org ]          [ .io ] (TLD Authority)
+            │
+            ▼
+    [ complexity.io ]                          (Authoritative Zone)
+            │
+            ▼
+     A Record: 198.51.100.24`}</pre>
+          </div>
+
+          <ul class="list-disc pl-6 space-y-2 text-text-secondary text-sm">
+            <li><strong class="text-text-primary">Root Nameservers (`.`):</strong> 13 named root authority systems (A through M), operated by 12 independent organizations and replicated via Anycast BGP routing across over 1,500 physical server clusters worldwide.</li>
+            <li><strong class="text-text-primary">Top-Level Domain (TLD) Nameservers:</strong> Managed registries responsible for domains ending in specific extensions (`.com`, `.net`, `.org`, ccTLDs like `.uk`, `.de`).</li>
+            <li><strong class="text-text-primary">Authoritative Nameservers:</strong> The final authority that holds the actual DNS records for a domain (A, AAAA, CNAME, MX, TXT).</li>
+          </ul>
+        </section>
+
+        <!-- Section 3: Recursive vs Iterative -->
+        <section id="recursive-vs-iterative" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            3. Recursive vs Iterative Resolution Flow
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              When a client application makes a DNS query, two types of resolution occur:
+            </p>
+            <ol class="list-decimal pl-6 space-y-3">
+              <li>
+                <strong class="text-text-primary">Recursive Query (Client to Resolver):</strong> The client (stub resolver) asks its configured recursive resolver (such as `1.1.1.1` or corporate DNS) to do all the work and return the final answer.
+              </li>
+              <li>
+                <strong class="text-text-primary">Iterative Queries (Resolver to Hierarchy):</strong> If the answer is not cached, the recursive resolver queries:
+                <ul class="list-disc pl-6 mt-2 space-y-1 text-sm">
+                  <li>Root server &rarr; returns TLD server IP.</li>
+                  <li>TLD server &rarr; returns Authoritative server IP.</li>
+                  <li>Authoritative server &rarr; returns final record IP.</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- Section 4: TTL and Caching -->
+        <section id="ttl-and-caching" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            4. TTL Caching & Failure Modes
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              Every DNS response carries a <strong class="text-text-primary">Time-To-Live (TTL)</strong> specifying how many seconds downstream resolvers and clients may cache the record.
+            </p>
+
+            <InfoCallout type="warning" title="Production Failure: Misconfigured TTL">
+              Setting TTL too high (e.g. 86400s / 24 hours) prevents rapid disaster recovery failover if an IP address goes down. Conversely, setting TTL too low (e.g. 5s) subjects authoritative nameservers to massive query amplification and increases cold-start request latency for every end user.
+            </InfoCallout>
+          </div>
+        </section>
+
+        <!-- Section 5: OS Resolution Syscall -->
+        <section id="os-resolution-syscall" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            5. Inside the OS: getaddrinfo() & NSSwitch
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              Under Linux, applications invoke the POSIX standard function <code class="font-mono text-sm">getaddrinfo()</code> provided by glibc.
+            </p>
+            <p>
+              The lookup order is controlled by <code class="font-mono text-sm">/etc/nsswitch.conf</code>:
+            </p>
+            <div class="p-3 rounded bg-surface border border-border-subtle font-mono text-xs">
+              hosts: files mdns4_minimal [NOTFOUND=return] dns
+            </div>
+            <p>
+              The OS first checks <code class="font-mono text-sm">/etc/hosts</code> before transmitting UDP/TCP port 53 packets to the nameservers specified in <code class="font-mono text-sm">/etc/resolv.conf</code>.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: Knowledge Check -->
+        <section id="knowledge-verification" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            6. Engineering Knowledge Verification
+          </h2>
+          <KnowledgeCheck
+            client:visible
+            question="Why are root nameserver IP addresses replicated via Anycast BGP routing rather than relying on a single physical host per letter?"
+            options={[
+              "To route client queries to the geographically closest available data center while absorbing massive distributed DDoS attacks without a single point of failure.",
+              "Because IPv4 addresses are limited to 13 total slots across the entire internet.",
+              "Because the DNS protocol forbids using TCP port 53 on any server outside North America.",
+              "To allow browsers to decrypt HTTPS traffic without requesting TLS certificates."
+            ]}
+            correctIndex={0}
+            explanation="Anycast allows hundreds of globally distributed physical servers to share the same IP address. BGP routers automatically direct queries along the shortest autonomous system path to the nearest healthy instance, distributing traffic and neutralizing regional denial-of-service attempts."
+          />
+        </section>
+
+        <!-- Section 7: Key Takeaways -->
+        <section id="key-takeaways" class="mb-12 scroll-mt-20 border-t border-border-subtle pt-8">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            7. Key Takeaways & References
+          </h2>
+          <ul class="list-disc pl-6 space-y-2 text-sm text-text-secondary font-technical mb-8">
+            <li><strong class="text-text-primary">Hierarchical Authority:</strong> Queries traverse Root (.) &rarr; TLD (.com) &rarr; Authoritative Zone.</li>
+            <li><strong class="text-text-primary">Caching Trade-off:</strong> TTL controls caching duration versus failover agility.</li>
+            <li><strong class="text-text-primary">Anycast Resilience:</strong> Shared IPs ensure high availability across globally replicated server footprints.</li>
+          </ul>
+
+          <h3 class="font-editorial text-lg font-bold text-text-primary mb-3">
+            Canonical Specifications
+          </h3>
+          <ul class="space-y-2 text-xs font-mono text-brand">
+            <li>
+              <a href="https://www.rfc-editor.org/rfc/rfc1034" target="_blank" rel="noreferrer" class="hover:underline flex items-center gap-1.5">
+                <span>RFC 1034: Domain Concepts and Facilities</span>
+                <ExternalLink class="w-3 h-3" />
+              </a>
+            </li>
+            <li>
+              <a href="https://www.rfc-editor.org/rfc/rfc1035" target="_blank" rel="noreferrer" class="hover:underline flex items-center gap-1.5">
+                <span>RFC 1035: Domain Implementation and Specification</span>
+                <ExternalLink class="w-3 h-3" />
+              </a>
+            </li>
+          </ul>
+        </section>
+      </article>
+
+      <!-- Right Sidebar: On-page Table of Contents -->
+      <aside class="hidden xl:block w-60 flex-shrink-0 sticky top-20">
+        <TableOfContents client:load items={headings} />
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,5 +1,5 @@
 :root {
-  /* Light Theme — Refined Architectural Ink & Deep Slate (instruction v1.0.2) */
+  /* Light Theme — Refined Architectural Slate & Blueprint (v1.0.4) */
   --bg-canvas: #f8fafc;
   --bg-surface: #ffffff;
   --bg-surface-elevated: #f1f5f9;
@@ -16,10 +16,11 @@
   --brand-primary: #315e8a;
   --brand-subtle: #eaf1f8;
   --brand-border: #cbdfe9;
-  --brand-hover: #264a6d;
+  --brand-hover: #244769;
   --brand-glow: rgba(49, 94, 138, 0.12);
 
   --accent-secondary: #397c78;
+  --accent-secondary-subtle: #e6f3f1;
 
   --status-success: #10b981;
   --status-warning: #f59e0b;
@@ -29,7 +30,7 @@
 }
 
 .dark {
-  /* Dark Theme — Restrained Engineering Obsidian-Navy (instruction v1.0.2) */
+  /* Dark Theme — Restrained Engineering Obsidian & Technical Slate (v1.0.4) */
   --bg-canvas: #10151d;
   --bg-surface: #171f2b;
   --bg-surface-elevated: #1e2938;
@@ -41,7 +42,7 @@
 
   --text-primary: #e7edf5;
   --text-secondary: #a3b0c2;
-  --text-muted: #728299;
+  --text-muted: #8492a6;
 
   --brand-primary: #83add6;
   --brand-subtle: #22364a;
@@ -50,6 +51,7 @@
   --brand-glow: rgba(131, 173, 214, 0.16);
 
   --accent-secondary: #75b6a9;
+  --accent-secondary-subtle: #19332f;
 
   --status-success: #34d399;
   --status-warning: #fbbf24;

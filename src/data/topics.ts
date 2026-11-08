@@ -103,7 +103,7 @@ export const TOPICS: TopicNode[] = [
     prerequisites: [],
     relatedTopics: ['client-server', 'dns-resolution'],
     nextTopics: ['client-server', 'dns-resolution'],
-    articleUrl: '/courses/system-architecture-fundamentals/client-server-architecture/introduction-to-client-server',
+    articleUrl: '/articles/client-server-architecture',
     status: 'published',
     x: 100,
     y: 80
@@ -120,7 +120,7 @@ export const TOPICS: TopicNode[] = [
     prerequisites: ['networking-foundations'],
     relatedTopics: ['http-protocols', 'linux-epoll'],
     nextTopics: ['http-protocols', 'linux-epoll'],
-    articleUrl: '/courses/system-architecture-fundamentals/client-server-architecture/introduction-to-client-server',
+    articleUrl: '/articles/client-server-architecture',
     status: 'published',
     x: 280,
     y: 80
@@ -137,7 +137,7 @@ export const TOPICS: TopicNode[] = [
     prerequisites: ['networking-foundations'],
     relatedTopics: ['http-protocols'],
     nextTopics: ['http-protocols'],
-    articleUrl: '/courses/system-architecture-fundamentals/network-fundamentals/dns-resolution-and-sockets',
+    articleUrl: '/articles/dns-resolution-and-sockets',
     status: 'published',
     x: 100,
     y: 200
@@ -154,7 +154,7 @@ export const TOPICS: TopicNode[] = [
     prerequisites: ['client-server', 'dns-resolution'],
     relatedTopics: ['linux-epoll', 'reverse-proxy'],
     nextTopics: ['linux-epoll', 'reverse-proxy'],
-    articleUrl: '/courses/system-architecture-fundamentals/client-server-architecture/request-lifecycle-and-protocols',
+    articleUrl: '/articles/request-lifecycle-and-protocols',
     status: 'published',
     x: 280,
     y: 200

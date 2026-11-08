@@ -29,7 +29,7 @@ const modules = [
         description: 'Deconstructing the fundamental communication paradigm that powers the modern internet.',
         time: '7m',
         tag: 'Interactive',
-        url: formatPath('/courses/system-architecture-fundamentals/client-server-architecture/introduction-to-client-server')
+        url: formatPath('/articles/client-server-architecture')
       },
       {
         number: '01.02',
@@ -37,7 +37,7 @@ const modules = [
         description: 'Tracing a network packet from socket allocation to application dispatch and transport acknowledgment.',
         time: '9m',
         tag: 'Workflow',
-        url: formatPath('/courses/system-architecture-fundamentals/client-server-architecture/request-lifecycle-and-protocols')
+        url: formatPath('/articles/request-lifecycle-and-protocols')
       },
       {
         number: '01.03',
@@ -45,7 +45,7 @@ const modules = [
         description: 'Hierarchical tree resolution, recursive resolvers, root servers, and TTL caching failure modes.',
         time: '8m',
         tag: 'Simulate',
-        url: formatPath('/courses/system-architecture-fundamentals/network-fundamentals/dns-resolution-and-sockets')
+        url: formatPath('/articles/dns-resolution-and-sockets')
       }
     ]
   },
@@ -54,6 +54,14 @@ const modules = [
     title: 'Infrastructure & Linux Runtime',
     description: 'How operating systems manage file descriptors, container isolation, and sub-millisecond in-memory caching.',
     lessons: [
+      {
+        number: '02.04',
+        title: 'Kubernetes Services: ClusterIP vs NodePort vs LoadBalancer',
+        description: 'Routing ingress traffic to ephemeral pods across cluster nodes.',
+        time: '14m',
+        tag: 'Interactive',
+        url: formatPath('/articles/kubernetes-services-clusterip-nodeport-loadbalancer')
+      },
       {
         number: '02.01',
         title: 'Inside a Linux Server: Epoll & File Descriptors',

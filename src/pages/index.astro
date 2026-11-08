@@ -30,7 +30,7 @@ const featuredArticles = [
     readingTime: '7 min',
     interactiveType: 'Interactive Simulator',
     status: 'published',
-    url: formatPath('/courses/system-architecture-fundamentals/client-server-architecture/introduction-to-client-server')
+    url: formatPath('/articles/client-server-architecture')
   },
   {
     number: '01.02',
@@ -39,16 +39,16 @@ const featuredArticles = [
     readingTime: '9 min',
     interactiveType: 'Live Workflow Diagram',
     status: 'published',
-    url: formatPath('/courses/system-architecture-fundamentals/client-server-architecture/request-lifecycle-and-protocols')
+    url: formatPath('/articles/request-lifecycle-and-protocols')
   },
   {
-    number: '01.03',
-    title: 'DNS: How Domain Names Find Servers',
-    description: 'Hierarchical tree resolution, recursive resolvers, root name servers, Anycast routing, and TTL caching failure modes.',
-    readingTime: '8 min',
-    interactiveType: 'Interactive Diagram',
+    number: '02.04',
+    title: 'Kubernetes Services: ClusterIP vs NodePort vs LoadBalancer',
+    description: 'Routing ingress traffic to ephemeral pods across cluster nodes. Interactive packet routing stepper and production YAML specifications.',
+    readingTime: '14 min',
+    interactiveType: 'Traffic Simulator & Stepper',
     status: 'published',
-    url: formatPath('/courses/system-architecture-fundamentals/network-fundamentals/dns-resolution-and-sockets')
+    url: formatPath('/articles/kubernetes-services-clusterip-nodeport-loadbalancer')
   }
 ];
 
@@ -394,6 +394,100 @@ const caseStudiesPreview = [
           </div>
         </a>
       ))}
+    </div>
+  </section>
+
+  <!-- Section 8 — Custom Diagram Studio Introduction -->
+  <section class="border-b border-border-subtle py-16 sm:py-24 px-4 sm:px-6 bg-surface/40">
+    <div class="max-w-layout mx-auto">
+      <div class="rounded-xl border border-border-subtle bg-surface p-8 sm:p-12 glow-card relative overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div class="space-y-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-subtle border border-brand/20 text-brand text-xs font-mono">
+              <Sparkles class="w-3.5 h-3.5" />
+              <span>CUSTOM ARCHITECTURE WORKSPACE</span>
+            </div>
+
+            <h2 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary tracking-tight leading-[1.15]">
+              Diagram Studio: Design Systems Directly in Your Browser.
+            </h2>
+
+            <p class="font-technical text-base text-text-secondary leading-relaxed max-w-xl">
+              An approachable, vector drawing workspace inspired by Excalidraw—tailored specifically for backend engineers and distributed architects. Connect microservices, trace request lifecycles, and export publication-ready diagrams with zero login required.
+            </p>
+
+            <div class="grid grid-cols-2 gap-3 text-xs font-technical text-text-secondary">
+              <div class="flex items-center gap-2">
+                <span class="text-brand font-bold">•</span>
+                <span>Specialized System Shapes</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-brand font-bold">•</span>
+                <span>Export to PNG, SVG & JSON</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-brand font-bold">•</span>
+                <span>8 Production Blueprints</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-brand font-bold">•</span>
+                <span>Offline Draft Persistence</span>
+              </div>
+            </div>
+
+            <div class="pt-2 flex flex-wrap items-center gap-4">
+              <Button href={formatPath('/studio')} variant="primary" size="lg">
+                <span>Launch Diagram Studio</span>
+                <ArrowRight class="w-4 h-4" />
+              </Button>
+              <a
+                href={formatPath('/studio')}
+                class="font-mono text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors underline underline-offset-4"
+              >
+                Browse 8 Starter Templates &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Interactive Workspace Mockup Preview -->
+          <div class="rounded-lg border border-border-subtle bg-canvas p-4 shadow-lg space-y-3 font-mono text-xs">
+            <div class="flex items-center justify-between pb-2 border-b border-border-subtle text-[11px] text-text-muted">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block"></span>
+                <span class="font-bold text-text-primary pl-2">three-tier-cluster.complexity.json</span>
+              </div>
+              <span className="text-[10px] bg-surface-elevated px-2 py-0.5 rounded border border-border-subtle">
+                Canvas 100%
+              </span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 py-6 px-2 text-center text-xs">
+              <div class="p-3 rounded-lg border border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400 font-bold">
+                Client (HTTPS)
+              </div>
+              <div class="p-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
+                API Gateway
+              </div>
+              <div class="p-3 rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold">
+                App Service
+              </div>
+              <div class="col-span-2 p-3 rounded-lg border border-orange-500/30 bg-orange-500/10 text-orange-600 dark:text-orange-400 font-bold">
+                Redis Cache (Sub-ms Latency)
+              </div>
+              <div class="p-3 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">
+                PostgreSQL DB
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-border-subtle/80 flex items-center justify-between text-[11px] text-text-muted">
+              <span>Tools: [Select] [Pan] [Rectangle] [Arrow] [Systems]</span>
+              <span className="text-brand font-semibold">Ready to Draw</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 

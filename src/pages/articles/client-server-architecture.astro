@@ -1,0 +1,414 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import TableOfContents from '@/components/navigation/TableOfContents';
+import InfoCallout from '@/components/interactive/InfoCallout.astro';
+import ComparisonTable from '@/components/interactive/ComparisonTable.astro';
+import KnowledgeCheck from '@/components/interactive/KnowledgeCheck';
+import DiagramContainer from '@/components/visualization/DiagramContainer.astro';
+import InteractiveDiagram from '@/components/visualization/InteractiveDiagram';
+import SystemFlowSimulator from '@/components/visualization/SystemFlowSimulator';
+import Badge from '@/components/ui/Badge.astro';
+import { formatPath } from '@/lib/utilities/url';
+import {
+  Clock,
+  ExternalLink,
+  BookOpen,
+  ArrowRight,
+  ShieldCheck,
+  Server,
+  Network,
+  Cpu,
+  Layers,
+  Sparkles,
+  Terminal
+} from 'lucide-react';
+
+const breadcrumbs = [
+  { label: 'Articles & Guides', href: formatPath('/articles') },
+  { label: 'Client-Server Architecture' }
+];
+
+const headings = [
+  { id: 'the-core-paradigm', text: '1. The Core Communication Paradigm', depth: 2, slug: 'the-core-paradigm' },
+  { id: 'topology-and-roles', text: '2. Topology & Connection Boundaries', depth: 2, slug: 'topology-and-roles' },
+  { id: 'live-flow-simulation', text: '3. Interactive System Flow Simulation', depth: 2, slug: 'live-flow-simulation' },
+  { id: 'p2p-vs-client-server', text: '4. Why Client-Server Beat Peer-to-Peer', depth: 2, slug: 'p2p-vs-client-server' },
+  { id: 'the-statelessness-invariant', text: '5. The Principle of Stateless Protocols', depth: 2, slug: 'the-statelessness-invariant' },
+  { id: 'failure-modes', text: '6. Production Failure Scenarios', depth: 2, slug: 'failure-modes' },
+  { id: 'knowledge-verification', text: '7. Engineering Knowledge Verification', depth: 2, slug: 'knowledge-verification' },
+  { id: 'key-takeaways', text: '8. Key Takeaways & References', depth: 2, slug: 'key-takeaways' }
+];
+
+const relatedGuides = [
+  {
+    title: 'Request Lifecycle & Transport Protocols',
+    url: formatPath('/articles/request-lifecycle-and-protocols'),
+    desc: 'Tracing a network packet from socket allocation down through TCP handshake, TLS, and HTTP/2 multiplexing.'
+  },
+  {
+    title: 'DNS: How Domain Names Find Servers',
+    url: formatPath('/articles/dns-resolution-and-sockets'),
+    desc: 'Hierarchical tree resolution, recursive resolvers, root name servers, and Anycast routing.'
+  },
+  {
+    title: 'Kubernetes Services Explained',
+    url: formatPath('/articles/kubernetes-services-clusterip-nodeport-loadbalancer'),
+    desc: 'ClusterIP vs NodePort vs LoadBalancer with interactive packet simulations.'
+  }
+];
+---
+
+<BaseLayout
+  title="Introduction to Client-Server Architecture — Complexity"
+  description="Deconstruct the foundational communication paradigm of distributed software. Sockets, state invariants, failure modes, and physical network boundaries."
+>
+  <div class="max-w-layout mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="mt-4 flex flex-col lg:flex-row gap-8 items-start">
+      <!-- Left Sidebar: Topic Group & Guides Index -->
+      <aside class="hidden lg:block w-64 flex-shrink-0 sticky top-20 space-y-6">
+        <div class="p-4 rounded-lg border border-border-subtle bg-surface">
+          <div class="font-mono text-[10px] text-brand uppercase font-bold tracking-wider mb-2">
+            TOPIC SERIES
+          </div>
+          <h3 class="font-editorial text-base font-bold text-text-primary mb-2">
+            Networking & Architecture
+          </h3>
+          <p class="text-xs text-text-secondary leading-relaxed mb-4">
+            Foundational protocols and transport invariants of distributed software systems.
+          </p>
+
+          <nav class="space-y-1.5 border-t border-border-subtle pt-3 text-xs font-technical">
+            <a
+              href={formatPath('/articles/client-server-architecture')}
+              class="block px-2.5 py-1.5 rounded bg-brand-subtle text-brand font-semibold border border-brand/20"
+            >
+              01. Client-Server Architecture
+            </a>
+            <a
+              href={formatPath('/articles/request-lifecycle-and-protocols')}
+              class="block px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            >
+              02. Request Lifecycle & Protocols
+            </a>
+            <a
+              href={formatPath('/articles/dns-resolution-and-sockets')}
+              class="block px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            >
+              03. DNS & Socket Resolution
+            </a>
+            <a
+              href={formatPath('/articles/kubernetes-services-clusterip-nodeport-loadbalancer')}
+              class="block px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            >
+              04. Kubernetes Services
+            </a>
+          </nav>
+        </div>
+
+        <div class="p-4 rounded-lg border border-border-subtle bg-surface-elevated/40 text-xs">
+          <div class="font-mono text-[10px] text-text-muted uppercase font-bold tracking-wider mb-2">
+            DIAGRAM WORKSPACE
+          </div>
+          <p class="text-text-secondary leading-relaxed mb-3">
+            Want to draw or customize this architecture? Open the interactive canvas.
+          </p>
+          <a
+            href={formatPath('/studio')}
+            class="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-brand hover:underline"
+          >
+            <span>Launch Diagram Studio</span>
+            <ArrowRight class="w-3.5 h-3.5" />
+          </a>
+        </div>
+      </aside>
+
+      <!-- Center Column: Primary Reading Canvas -->
+      <article class="flex-1 min-w-0 max-w-content mx-auto">
+        <!-- Editorial Header -->
+        <header class="border-b border-border-subtle pb-8 mb-10">
+          <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="font-mono text-xs font-bold text-brand px-2.5 py-0.5 rounded bg-brand-subtle border border-brand/20">
+              GUIDE 01.01
+            </span>
+            <Badge variant="success" size="sm">FOUNDATIONAL INVARIANT</Badge>
+            <span class="font-mono text-xs text-text-muted flex items-center gap-1.5">
+              <Clock class="w-3.5 h-3.5" /> 7 min read
+            </span>
+          </div>
+
+          <h1 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary tracking-tight leading-[1.1] mb-6">
+            Introduction to Client-Server Architecture
+          </h1>
+
+          <p class="font-technical text-lg sm:text-xl text-text-secondary leading-relaxed mb-6">
+            Deconstructing the foundational communication paradigm that powers the modern internet. Socket allocations, state invariants, physical network boundaries, and horizontal scaling mechanics.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 text-xs font-mono text-text-muted pt-4 border-t border-border-subtle/60">
+            <div>Author: <span class="text-text-primary font-semibold">Complexity Architecture Staff</span></div>
+            <span>•</span>
+            <div>Verified against: <span class="text-text-primary font-semibold">RFC 9110 & Linux Socket Spec</span></div>
+          </div>
+        </header>
+
+        <!-- Section 1 -->
+        <section id="the-core-paradigm" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            1. The Core Communication Paradigm
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              At the foundation of virtually every distributed web system lies a deliberate separation of responsibilities: <strong class="text-text-primary">Client-Server Architecture</strong>.
+            </p>
+            <p>
+              In this paradigm:
+            </p>
+            <ul class="list-disc pl-6 space-y-2 text-text-secondary">
+              <li>
+                <strong class="text-text-primary">The Client:</strong> Initiates outbound network connections. It is typically user-facing (a browser, mobile app, CLI tool, or IoT sensor) and responsible for presentation logic and user interaction.
+              </li>
+              <li>
+                <strong class="text-text-primary">The Server:</strong> Passively binds to an IP address and port, continuously listening for incoming connection requests. It enforces authorization, executes core business logic, coordinates with databases, and returns serialized responses.
+              </li>
+            </ul>
+
+            <InfoCallout type="note" title="Engineering Invariant">
+              Clients and servers are roles defined by network behavior, not hardware types. A backend API service acting as a server to incoming user requests acts as a client when querying an upstream PostgreSQL database or Redis cluster over internal sockets.
+            </InfoCallout>
+          </div>
+        </section>
+
+        <!-- Section 2 -->
+        <section id="topology-and-roles" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            2. Topology & Connection Boundaries
+          </h2>
+          <p class="font-technical text-base text-text-secondary leading-relaxed mb-6">
+            The diagram below illustrates the demarcation between user hardware, public internet ingress, and private backend infrastructure. Click each component to inspect its network parameters and runtime invariants:
+          </p>
+
+          <DiagramContainer title="Client-Server Communication Topology" caption="Clients initiate TCP/TLS connections to server listeners bound on specific IP ports.">
+            <InteractiveDiagram
+              client:visible
+              data={{
+                title: "Client-Server Topology",
+                caption: "Interactive inspection of network roles",
+                nodes: [
+                  {
+                    id: "client-browser",
+                    label: "Web Browser (Client)",
+                    type: "client",
+                    description: "Runs on user hardware. Initiates TCP connection, sends HTTP request, renders response.",
+                    status: "operational",
+                    metrics: { "Active Sockets": "6", "Outbound Port": "54231", "Protocol": "HTTP/2" }
+                  },
+                  {
+                    id: "server-gateway",
+                    label: "API Gateway (Server Listener)",
+                    type: "gateway",
+                    description: "Bound to 0.0.0.0:443. Manages TLS termination, rate limiting, and forwards to services.",
+                    status: "operational",
+                    metrics: { "Listening Port": "443", "Active Conns": "12,450", "QPS": "8,200" }
+                  },
+                  {
+                    id: "server-backend",
+                    label: "Application Service",
+                    type: "service",
+                    description: "Executes business logic, queries data layer, and formats JSON payload.",
+                    status: "operational",
+                    metrics: { "CPU": "34%", "Memory": "1.2GB", "Worker Threads": "16" }
+                  }
+                ],
+                connections: [
+                  { from: "client-browser", to: "server-gateway", label: "TLS 1.3 / TCP", isAnimated: true },
+                  { from: "server-gateway", to: "server-backend", label: "Internal RPC", isAnimated: true }
+                ]
+              }}
+            />
+          </DiagramContainer>
+        </section>
+
+        <!-- Section 3 -->
+        <section id="live-flow-simulation" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            3. Interactive System Flow Simulation
+          </h2>
+          <p class="font-technical text-base text-text-secondary leading-relaxed mb-6">
+            Observe what happens inside this architecture when traffic changes. Adjust the ingress request load slider below to watch how the gateway, application workers, and storage layers react in real-time:
+          </p>
+
+          <SystemFlowSimulator client:visible />
+        </section>
+
+        <!-- Section 4 -->
+        <section id="p2p-vs-client-server" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            4. Why Client-Server Beat Peer-to-Peer
+          </h2>
+          <p class="font-technical text-base text-text-secondary leading-relaxed mb-6">
+            In the early decades of distributed networking, peer-to-peer (P2P) and mainframe terminal architectures competed for dominance. Client-server architecture prevailed for commercial software engineering due to distinct operational trade-offs:
+          </p>
+
+          <ComparisonTable
+            headers={["Dimension", "Client-Server Architecture", "Peer-to-Peer (P2P)"]}
+            rows={[
+              ["State Authorization", "Centralized server enforces authorization and consistency", "Decentralized consensus required; vulnerable to bad actors"],
+              ["Update Velocity", "Deploy code once to server; instantly live for all clients", "Requires all peer nodes to upgrade software independently"],
+              ["Bandwidth Model", "High server egress bandwidth; minimal client uplink", "Symmetric bandwidth usage across all participants"],
+              ["Failure Blast Radius", "Server outage affects all clients unless redundant", "Network resilient to individual node dropouts"]
+            ]}
+          />
+        </section>
+
+        <!-- Section 5 -->
+        <section id="the-statelessness-invariant" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            5. The Principle of Stateless Protocols
+          </h2>
+          <div class="font-technical text-base text-text-secondary leading-relaxed space-y-4">
+            <p>
+              Modern scalable client-server systems operate under the <strong class="text-text-primary">Stateless Protocol</strong> invariant.
+            </p>
+            <p>
+              A protocol is <em>stateless</em> if each individual request from a client to a server contains all contextual information necessary for the server to understand and authorize the operation. The server does not store active session context in its local RAM between consecutive requests.
+            </p>
+
+            <div class="p-4 rounded-lg bg-surface-elevated border border-border-subtle font-mono text-xs overflow-x-auto my-6 text-text-primary">
+              <pre>{`┌─────────────────┐                       ┌─────────────────┐
+│     Client      │                       │     Server      │
+└────────┬────────┘                       └────────┬────────┘
+         │                                         │
+         │  GET /cart?user=42 (Includes Auth Token)│
+         │────────────────────────────────────────►│ Validates Token
+         │                                         │ Reads Cart from DB
+         │  200 OK [Item 1, Item 2]                │
+         │◄────────────────────────────────────────│
+         │                                         │ (Server memory cleared)
+         │                                         │
+         │  POST /checkout (Includes Auth Token)   │ Any server in pool
+         │────────────────────────────────────────►│ can handle this!
+         │                                         │`}</pre>
+            </div>
+
+            <p>
+              If Server A crashes between request #1 and request #2, a load balancer can seamlessly route request #2 to Server B without the user experiencing any session loss or logout.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6 -->
+        <section id="failure-modes" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            6. Production Failure Scenarios
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="p-4 rounded-lg border border-border-subtle bg-surface space-y-2">
+              <div class="font-mono text-xs text-rose-500 font-bold flex items-center gap-1.5">
+                <span>01. Thundering Herd</span>
+              </div>
+              <p class="text-xs text-text-secondary leading-relaxed">
+                When a shared cache key expires during peak traffic, thousands of concurrent client requests bypass the cache simultaneously, overwhelming the database connection pool.
+              </p>
+            </div>
+            <div class="p-4 rounded-lg border border-border-subtle bg-surface space-y-2">
+              <div class="font-mono text-xs text-amber-500 font-bold flex items-center gap-1.5">
+                <span>02. Socket Buffer Exhaustion</span>
+              </div>
+              <p class="text-xs text-text-secondary leading-relaxed">
+                If downstream application threads block, the kernel's TCP receive buffer fills up, causing the OS to drop incoming SYN packets and leading to client connection timeouts.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 7 -->
+        <section id="knowledge-verification" class="mb-12 scroll-mt-20">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            7. Engineering Knowledge Verification
+          </h2>
+          <KnowledgeCheck
+            client:visible
+            question="Why does storing user session state in an application server's local RAM violate stateless horizontal scaling?"
+            options={[
+              "It prevents subsequent requests from that user from being processed by any server other than the specific server holding the memory state.",
+              "It causes network sockets to instantly terminate when RAM utilization exceeds 50%.",
+              "It makes TCP handshakes take twice as long due to packet retransmissions.",
+              "It violates the POSIX file descriptor limit on modern Linux servers."
+            ]}
+            correctIndex={0}
+            explanation="When state is stored in a server's local memory, subsequent requests from that client must be pinned to that specific machine (sticky sessions). If that machine fails or traffic surges, other machines cannot seamlessly take over without losing the user's session."
+          />
+        </section>
+
+        <!-- Section 8 -->
+        <section id="key-takeaways" class="mb-12 scroll-mt-20 border-t border-border-subtle pt-8">
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-4">
+            8. Key Takeaways & References
+          </h2>
+          <ul class="list-disc pl-6 space-y-2 text-sm text-text-secondary font-technical mb-8">
+            <li><strong class="text-text-primary">Roles, Not Machines:</strong> Clients initiate connections; servers listen on ports and respond.</li>
+            <li><strong class="text-text-primary">Stateless Scalability:</strong> Storing session state in distributed storage (Redis or databases) permits web instances to scale up and down horizontally without session affinity.</li>
+            <li><strong class="text-text-primary">Socket Invariants:</strong> Connection handshakes, OS file descriptor limits, and buffer capacities dictate production throughput.</li>
+          </ul>
+
+          <h3 class="font-editorial text-lg font-bold text-text-primary mb-3">
+            Canonical Specifications
+          </h3>
+          <ul class="space-y-2 text-xs font-mono text-brand">
+            <li>
+              <a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noreferrer" class="hover:underline flex items-center gap-1.5">
+                <span>RFC 9110: HTTP Semantics & Architecture</span>
+                <ExternalLink class="w-3 h-3" />
+              </a>
+            </li>
+            <li>
+              <a href="https://en.wikipedia.org/wiki/W._Richard_Stevens" target="_blank" rel="noreferrer" class="hover:underline flex items-center gap-1.5">
+                <span>Unix Network Programming (W. Richard Stevens)</span>
+                <ExternalLink class="w-3 h-3" />
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Next Guides Navigation -->
+        <div class="mt-12 pt-8 border-t border-border-subtle grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-4 rounded-lg border border-border-subtle bg-surface">
+            <span class="font-mono text-[10px] text-text-muted uppercase">Recommended Next Guide</span>
+            <h4 class="font-editorial text-base font-bold text-text-primary mt-1 mb-2">
+              Request Lifecycle & Transport Protocols
+            </h4>
+            <a
+              href={formatPath('/articles/request-lifecycle-and-protocols')}
+              class="inline-flex items-center gap-1 text-xs font-mono font-semibold text-brand hover:underline"
+            >
+              <span>Read Guide 01.02</span>
+              <ArrowRight class="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          <div class="p-4 rounded-lg border border-border-subtle bg-surface">
+            <span class="font-mono text-[10px] text-text-muted uppercase">Interactive Workspace</span>
+            <h4 class="font-editorial text-base font-bold text-text-primary mt-1 mb-2">
+              Diagram Studio
+            </h4>
+            <a
+              href={formatPath('/studio')}
+              class="inline-flex items-center gap-1 text-xs font-mono font-semibold text-brand hover:underline"
+            >
+              <span>Design Your Own Topology</span>
+              <ArrowRight class="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Right Sidebar: On-page Table of Contents -->
+      <aside class="hidden xl:block w-60 flex-shrink-0 sticky top-20">
+        <TableOfContents client:load items={headings} />
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

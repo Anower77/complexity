@@ -1,120 +1,92 @@
-# Design System: Complexity
+# Design System: Complexity (v1.0.4)
 
-> Version: 1.0.0  
-> Philosophy: Editorial Technical Minimalism
+## 1. Overview & Architectural Philosophy
 
----
+Complexity is an engineering knowledge publication and interactive visualization platform. The design system is engineered for technical clarity, high typographical legibility, calm color restraint, and functional visual feedback.
 
-## 1. Brand Identity & Personality
-
-Complexity is designed as an intelligent, technical, and editorial publication. It merges the typographical rigor of classic print journalism with the dynamic observability of modern distributed systems tools.
-
-### Brand Attributes
-- **Intelligent**: Treats the reader with respect; avoids condescension, oversimplification, or hand-wavy analogies.
-- **Technical**: Uses precise engineering terminology, physical constraints (CPU cycles, sockets, packets), and exact data flow representations.
-- **Minimal**: Whitespace is an active design element. No decorative clutter, unnecessary cards, or visual noise.
-- **Editorial**: High-contrast serif headlines, balanced line lengths (65–75 characters), and comfortable reading rhythm.
-- **Professional**: Monospaced data tags, structural borders, clean line art diagrams, and restrained palette.
-- **Experimental**: Interactive visualizers invite readers to push systems to failure and observe the consequences.
-
-### Anti-Patterns (Explicitly Avoided)
-- ❌ **Generic SaaS Dashboard aesthetic**: No glowing gradient cards, rounded neon buttons, or cookie-cutter templates.
-- ❌ **Excessive Glassmorphism**: No heavily blurred translucent surfaces that compromise legibility.
-- ❌ **Emoji Illustrations**: No rocket ships, fire emojis, or cartoonish graphics representing servers or databases.
-- ❌ **Gratuitous Animation**: Animations must communicate data movement or state transition; never animate for pure decoration.
+### Core Principles
+1. **Restraint over Decoration**: No gratuitous gradients, glowing neon borders, or generic marketing fluff. Every visual cue communicates meaning (state, topology, packet movement, or hierarchy).
+2. **First-Principles Accuracy**: Architecture diagrams depict realistic component boundaries, protocols, and failure modes.
+3. **Dual-Theme Rigor**: Light and dark themes are designed symmetrically with strict WCAG AA contrast compliance.
+4. **Accessible Visualizations**: Interactive visualizers provide accessible keyboard controls, step-by-step descriptions, and respect `prefers-reduced-motion`.
 
 ---
 
-## 2. Typography
+## 2. Centralized Color Tokens
 
-Complexity pairs a high-character editorial serif with an ultra-clean technical sans-serif and an engineered monospace font.
+Tokens are defined via CSS variables in `src/styles/theme.css` and exposed to Tailwind CSS in `tailwind.config.ts`.
 
-| Role | Font Family | Fallback Stack | Usage |
+### Light Theme (Archival Blueprint & Editorial Slate)
+- **Canvas (`--bg-canvas`)**: `#F8FAFC` (Clean, warm neutral paper)
+- **Surface (`--bg-surface`)**: `#FFFFFF` (Card and panel backgrounds)
+- **Surface Elevated (`--bg-surface-elevated`)**: `#F1F5F9` (Hover states, toolbar items, tags)
+- **Surface Muted (`--bg-surface-muted`)**: `#E2E8F0` (Dividers, disabled states)
+- **Border Subtle (`--border-subtle`)**: `#E2E8F0` (Structural hairline borders)
+- **Border Strong (`--border-strong`)**: `#CBD5E1` (Active card borders, inputs)
+- **Text Primary (`--text-primary`)**: `#172033` (Contrast ratio > 11:1 against canvas)
+- **Text Secondary (`--text-secondary`)**: `#64748B` (Descriptions, metadata)
+- **Text Muted (`--text-muted`)**: `#94A3B8` (Captions, footnotes, timestamps)
+- **Brand Primary Accent (`--brand-primary`)**: `#315E8A` (Deep architectural steel blue)
+- **Brand Subtle (`--brand-subtle`)**: `#EAF1F8` (Tinted highlight badges and active nodes)
+- **Secondary Accent (`--accent-secondary`)**: `#397C78` (Subtle engineering teal)
+
+### Dark Theme (Engineered Obsidian & Technical Slate)
+- **Canvas (`--bg-canvas`)**: `#10151D` (Deep matte technical slate)
+- **Surface (`--bg-surface`)**: `#171F2B` (Panels, code blocks, cards)
+- **Surface Elevated (`--bg-surface-elevated`)**: `#1E2938` (Toolbars, inputs, hover state)
+- **Surface Muted (`--bg-surface-muted`)**: `#273549` (Selected rows, inactive controls)
+- **Border Subtle (`--border-subtle`)**: `#2B394A` (Hairline component separators)
+- **Border Strong (`--border-strong`)**: `#3B4E65` (High-visibility borders)
+- **Text Primary (`--text-primary`)**: `#E7EDF5` (Crisp contrast ratio > 12:1)
+- **Text Secondary (`--text-secondary`)**: `#A3B0C2` (Secondary text, descriptions)
+- **Text Muted (`--text-muted`)**: `#728299` (Captions, non-essential details)
+- **Brand Primary Accent (`--brand-primary`)**: `#83ADD6` (Light steel blue, vibrant on dark)
+- **Brand Subtle (`--brand-subtle`)**: `#22364A` (Low-contrast background tint)
+- **Secondary Accent (`--accent-secondary`)**: `#75B6A9` (Muted mint teal)
+
+### Status Tokens (Both Themes)
+- **Success (`--status-success`)**: `#10B981` (Light) / `#34D399` (Dark) — Healthy nodes, 200 OK
+- **Warning (`--status-warning`)**: `#F59E0B` (Light) / `#FBBF24` (Dark) — High latency, queue backlog
+- **Danger (`--status-danger`)**: `#EF4444` (Light) / `#F87171` (Dark) — Outage, packet drops, 5xx
+- **Info (`--status-info`)**: `#315E8A` (Light) / `#83ADD6` (Dark) — Informational annotations
+
+---
+
+## 3. Typography System
+
+| Role | Font Family | Tailwind Class | Application |
 | :--- | :--- | :--- | :--- |
-| **Editorial Serif** | *Instrument Serif / Newsreader / Georgia* | `Georgia, serif` | Article titles, chapter headings, editorial pull-quotes |
-| **Technical Sans** | *Inter / Geist Sans / System UI* | `system-ui, -apple-system, sans-serif` | Body text, UI controls, navigation, component labels |
-| **Engineered Mono** | *JetBrains Mono / Geist Mono* | `ui-monospace, SFMono-Regular, monospace` | Code snippets, terminal outputs, metrics, packet headers |
+| **Editorial Headings** | Newsreader, Georgia, serif | `font-editorial` | Article titles, Hero headlines, section titles |
+| **Technical Body & UI** | Inter, system-ui, sans-serif | `font-technical` / `font-sans` | Explanations, UI controls, navigation |
+| **Engineered Code & Tags**| JetBrains Mono, monospace | `font-mono` | Code snippets, metrics, IP/ports, metadata |
 
-### Type Scale
-- **Display 1 (H1)**: `2.75rem (44px)` / Line Height `1.15` / Editorial Serif / Bold
-- **Display 2 (H2)**: `2.00rem (32px)` / Line Height `1.25` / Editorial Serif / SemiBold
-- **Section Heading (H3)**: `1.375rem (22px)` / Line Height `1.35` / Technical Sans / Medium
-- **Subheading (H4)**: `1.125rem (18px)` / Line Height `1.4` / Technical Sans / SemiBold
-- **Body Large**: `1.125rem (18px)` / Line Height `1.75` / Max width 68ch
-- **Body Regular**: `1.000rem (16px)` / Line Height `1.65` / UI text and secondary descriptions
-- **Caption / Mono**: `0.875rem (14px)` / Line Height `1.5` / Metrics, timestamps, tags
-
----
-
-## 3. Color Tokens & Theme Architecture
-
-The system provides fully tuned Dark and Light themes implemented via CSS variables.
-
-```css
-:root {
-  /* Light Theme — Archival Paper & Ink */
-  --bg-canvas: #fcfcfb;
-  --bg-surface: #ffffff;
-  --bg-surface-elevated: #f4f4f2;
-  --border-subtle: #e5e5e0;
-  --border-strong: #27272a;
-  
-  --text-primary: #121212;
-  --text-secondary: #52525b;
-  --text-muted: #71717a;
-  
-  --accent: #2563eb;          /* Technical Blue */
-  --accent-subtle: #eff6ff;
-  
-  --status-success: #16a34a;  /* Operational */
-  --status-warning: #d97706;  /* Degraded / Saturation */
-  --status-danger: #dc2626;   /* Node Outage / Latency Spike */
-  --status-info: #0284c7;
-}
-
-.dark {
-  /* Dark Theme — Deep Slate & Technical Charcoal */
-  --bg-canvas: #090a0f;
-  --bg-surface: #11131a;
-  --bg-surface-elevated: #181b24;
-  --border-subtle: #222634;
-  --border-strong: #3b4254;
-  
-  --text-primary: #f4f4f6;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-  
-  --accent: #3b82f6;          /* Technical Blue */
-  --accent-subtle: #1e293b;
-  
-  --status-success: #22c55e;
-  --status-warning: #f59e0b;
-  --status-danger: #ef4444;
-  --status-info: #38bdf8;
-}
-```
+### Hierarchy Scale
+- **Display 1**: `text-4xl sm:text-6xl lg:text-7xl` / line-height `1.08`
+- **Section Heading (H2)**: `text-2xl sm:text-4xl` / line-height `1.2`
+- **Subheading (H3)**: `text-lg sm:text-xl` / line-height `1.3`
+- **Body Large**: `text-base sm:text-lg` / max-width `70ch` / line-height `1.75`
+- **Body Regular**: `text-sm sm:text-base` / line-height `1.65`
+- **Caption / Metadata**: `text-xs font-mono` / line-height `1.4`
 
 ---
 
-## 4. Diagram & Visualization Aesthetic
+## 4. Spacing, Grids & Layout Invariants
 
-Architecture diagrams must look native to the editorial style:
-- **Clean Vectors**: 1.5px stroke width, rounded corners (4px radius), subtle grid backdrops (16px dot matrix or faint graph grid).
-- **Functional Color Only**: Colors are used exclusively to indicate component state:
-  - Grey / Neutral: Idle, operational base state.
-  - Accent (Blue): Active request path / selected component.
-  - Warning (Amber): High queue backlog, degraded cache, high memory pressure.
-  - Danger (Red): Network partition, dropped packets, 5xx responses.
-- **Interactive States**:
-  - Hover: Subtle border contrast increase and connection highlight.
-  - Active / Selected: Opens the ComponentInspector showing internal properties (e.g. socket state, buffer size, latency contribution).
+- **Maximum Page Container**: `max-w-layout` (`1440px`), centered with `mx-auto px-4 sm:px-6`.
+- **Article Reading Column**: `max-w-content` (`900px`) and `max-w-reading` (`70ch`).
+- **Sidebar Dimensions**:
+  - Left navigation: `width: 280px–300px` (desktop), collapsible drawer on mobile/tablet.
+  - Right table-of-contents: `width: 240px` (desktop xl).
+- **Border Radius Standards**:
+  - Small tags and buttons: `rounded-md` (`6px`)
+  - Panels, cards, diagrams: `rounded-lg` (`8px`)
+  - Full pills: `rounded-full` (`9999px`)
+- **Focus Indicators**: Visible focus outline on all interactive elements: `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2`.
 
 ---
 
-## 5. UI Primitives & Components
+## 5. Diagram & Studio Visual Guidelines
 
-- **Buttons**: Flat, high-contrast borders, minimal padding, monospace labels (`[ EXPLORE ]`, `[ SIMULATE ]`).
-- **Sliders**: Precision step controls with numeric value callout and unit badge (`5,000 req/s`).
-- **Cards**: Single hairline border (`--border-subtle`), flat background, zero box-shadow in light mode or faint glow in dark mode.
-- **Inspectors**: Side drawers or embedded panels with structured key-value tables and state badges.
-- **Knowledge Check Blocks**: Multi-choice options with instant rationale disclosure upon selection.
+1. **Vectors**: Hairline 1.5px or 2px stroke, crisp vector icons (Lucide React), subtle 20px dot grid canvas.
+2. **Engineering Primitives**: Consistent semantic borders and badges for Client, Server, Database, Cache, Queue, Gateway, Load Balancer, Container, Pod, and Cloud.
+3. **Connections**: Clean bezier or orthogonal lines with arrowheads indicating request and response flow direction.

@@ -36,6 +36,12 @@ const firstLessonUrl = firstLesson
   ? formatPath(`/courses/${course.slug}/${chaptersWithLessons[0].slug}/${firstLesson.slug}`)
   : formatPath(`/courses/${course.slug}`);
 
+const articleLinkMap: Record<string, string> = {
+  'introduction-to-client-server': '/articles/client-server-architecture',
+  'request-lifecycle-and-protocols': '/articles/request-lifecycle-and-protocols',
+  'dns-resolution-and-sockets': '/articles/dns-resolution-and-sockets'
+};
+
 const breadcrumbs = [
   { label: 'Structured Path', href: formatPath('/path') },
   { label: course.title }
@@ -93,7 +99,7 @@ const breadcrumbs = [
               <div class="divide-y divide-border-subtle">
                 {chapter.lessons.map((lesson, lIdx) => (
                   <a
-                    href={formatPath(`/courses/${course.slug}/${chapter.slug}/${lesson.slug}`)}
+                    href={formatPath(articleLinkMap[lesson.slug] || `/courses/${course.slug}/${chapter.slug}/${lesson.slug}`)}
                     class="group p-4 flex items-center justify-between hover:bg-surface-elevated transition-colors"
                   >
                     <div class="flex items-start gap-3">

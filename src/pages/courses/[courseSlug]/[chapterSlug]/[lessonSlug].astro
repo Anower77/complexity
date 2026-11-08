@@ -24,6 +24,16 @@ export async function getStaticPaths() {
 
 const { courseSlug, chapterSlug, lessonSlug } = Astro.params;
 
+const redirectMap: Record<string, string> = {
+  'introduction-to-client-server': '/articles/client-server-architecture',
+  'request-lifecycle-and-protocols': '/articles/request-lifecycle-and-protocols',
+  'dns-resolution-and-sockets': '/articles/dns-resolution-and-sockets'
+};
+
+if (lessonSlug && redirectMap[lessonSlug]) {
+  return Astro.redirect(formatPath(redirectMap[lessonSlug]));
+}
+
 const course = getCourseBySlug(courseSlug!);
 const chapter = getChapterBySlug(courseSlug!, chapterSlug!);
 const lesson = getLessonBySlug(courseSlug!, lessonSlug!);

@@ -1,0 +1,13 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { DiagramStudio } from '@/components/studio/DiagramStudio';
+
+---
+
+<BaseLayout
+  title="Diagram Studio — Interactive Architecture Workspace | Complexity"
+  description="Excalidraw-inspired engineering diagram workspace. Draw systems architecture, network topologies, request flows, and Kubernetes deployments. Export to PNG, SVG, or JSON."
+  hideFooter={true}
+>
+  <DiagramStudio client:only="react" />
+</BaseLayout>
