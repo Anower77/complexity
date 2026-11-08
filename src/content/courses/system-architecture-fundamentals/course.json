@@ -1,0 +1,29 @@
+{
+  "id": "course-sys-arch-fund",
+  "slug": "system-architecture-fundamentals",
+  "title": "System Architecture Fundamentals",
+  "description": "A comprehensive, first-principles exploration of how clients and servers exchange data, handle concurrency, and maintain stability under production traffic.",
+  "difficulty": "beginner",
+  "estimatedDuration": "3 hours",
+  "learningObjectives": [
+    "Understand the separation of concerns between client agents and server processes",
+    "Trace requests across transport layers, network sockets, and application runtimes",
+    "Analyze bottlenecks in connection pooling, socket limits, and concurrency models",
+    "Reason about trade-offs between stateful sessions and stateless horizontal scaling"
+  ],
+  "prerequisites": [
+    "Familiarity with basic programming concepts",
+    "Basic awareness of what an IP address and port represent"
+  ],
+  "chapterIds": [
+    "chapter-client-server",
+    "chapter-network-foundations"
+  ],
+  "status": "published",
+  "metadata": {
+    "category": "Foundations",
+    "tags": ["architecture", "networking", "sockets", "client-server", "http"],
+    "author": "Complexity Editorial Board",
+    "version": "1.0.0"
+  }
+}

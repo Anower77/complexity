@@ -1,0 +1,11 @@
+{
+  "id": "chapter-network-foundations",
+  "slug": "network-fundamentals",
+  "courseId": "system-architecture-fundamentals",
+  "title": "Network Fundamentals",
+  "description": "How domain names are resolved into IP addresses, and how operating system sockets facilitate packet exchange.",
+  "order": 2,
+  "lessonIds": [
+    "dns-resolution-and-sockets"
+  ]
+}

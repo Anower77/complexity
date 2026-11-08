@@ -1,0 +1,40 @@
+---
+interface Props {
+  headers: string[];
+  rows: (string | number)[][];
+  caption?: string;
+  class?: string;
+}
+
+const { headers, rows, caption, class: className = '' } = Astro.props;
+---
+
+<div class={`my-6 overflow-x-auto rounded-lg border border-border-subtle bg-surface ${className}`}>
+  {caption && (
+    <div class="px-4 py-2 border-b border-border-subtle text-xs font-mono text-text-muted bg-surface-elevated">
+      {caption}
+    </div>
+  )}
+  <table class="w-full text-left text-xs border-collapse">
+    <thead>
+      <tr class="border-b border-border-subtle bg-surface-elevated font-technical">
+        {headers.map((header, idx) => (
+          <th class={`py-3 px-4 font-semibold text-text-primary ${idx === 0 ? 'w-1/4' : ''}`}>
+            {header}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-border-subtle text-text-secondary font-technical">
+      {rows.map((row) => (
+        <tr class="hover:bg-surface-elevated/50 transition-colors">
+          {row.map((cell, idx) => (
+            <td class={`py-3 px-4 ${idx === 0 ? 'font-medium text-text-primary' : ''}`}>
+              {cell}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,34 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import SearchDialog from '@/components/search/SearchDialog';
+import { generateSearchDocuments } from '@/lib/search/generate-index';
+
+const documents = generateSearchDocuments();
+const breadcrumbs = [
+  { label: 'Search' }
+];
+---
+
+<BaseLayout
+  title="Search — Complexity"
+  description="Search across courses, chapters, and lessons on the Complexity platform."
+>
+  <div class="max-w-reading mx-auto px-4 sm:px-6 py-10">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="mb-8">
+      <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
+        DISCOVERY
+      </div>
+      <h1 class="font-editorial text-3xl sm:text-4xl font-bold text-text-primary tracking-tight mb-2">
+        Search Complexity
+      </h1>
+      <p class="text-sm text-text-secondary font-technical">
+        Search across all course outlines, chapter topics, and lesson concepts. Press <kbd class="font-mono text-xs px-1.5 py-0.5 rounded border border-border-subtle bg-surface-elevated">ESC</kbd> to dismiss.
+      </p>
+    </header>
+
+    <SearchDialog client:load documents={documents} isOpenDefault={true} />
+  </div>
+</BaseLayout>

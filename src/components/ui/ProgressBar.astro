@@ -1,0 +1,22 @@
+---
+interface Props {
+  value: number; // 0 to 100
+  class?: string;
+  size?: 'sm' | 'md';
+}
+
+const { value = 0, class: className = '', size = 'md' } = Astro.props;
+const clamped = Math.max(0, Math.min(100, value));
+
+const heights = {
+  sm: 'h-1.5',
+  md: 'h-2'
+};
+---
+
+<div class={`w-full bg-surface-muted rounded-full overflow-hidden ${heights[size]} ${className}`} role="progressbar" aria-valuenow={clamped} aria-valuemin={0} aria-valuemax={100}>
+  <div
+    class="bg-brand h-full rounded-full transition-all duration-300 ease-out"
+    style={`width: ${clamped}%`}
+  />
+</div>

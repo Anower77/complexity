@@ -1,0 +1,94 @@
+---
+id: "dns-resolution-and-sockets"
+slug: "dns-resolution-and-sockets"
+chapterId: "chapter-network-foundations"
+courseId: "system-architecture-fundamentals"
+title: "DNS: How Domain Names Find Servers"
+description: "Understanding hierarchical DNS tree resolution, recursive resolvers, root servers, and TTL caching."
+order: 1
+difficulty: "beginner"
+estimatedReadingTime: 8
+objectives:
+  - "Understand the hierarchical tree structure of the Domain Name System"
+  - "Trace recursive vs iterative DNS lookups"
+  - "Explore TTL (Time-To-Live) caching mechanisms and failure modes"
+prerequisites:
+  - "Client-Server Architecture"
+status: "published"
+relatedLessons:
+  - "introduction-to-client-server"
+references:
+  - title: "RFC 1035: Domain Names - Implementation and Specification"
+    url: "https://www.rfc-editor.org/rfc/rfc1035"
+    type: "rfc"
+---
+
+import InfoCallout from '@/components/interactive/InfoCallout.astro';
+import KnowledgeCheck from '@/components/interactive/KnowledgeCheck';
+
+## 1. Why Do We Need DNS?
+
+Computers communicate across the internet using numeric **IP addresses** (such as IPv4 `142.250.190.46` or IPv6 `2607:f8b0:4005:808::200e`).
+
+Humans, however, remember names like `complexity.dev` or `github.com`.
+
+The **Domain Name System (DNS)** is the globally distributed database responsible for translating human-readable hostnames into machine-routable IP addresses.
+
+---
+
+## 2. The Hierarchical Tree
+
+DNS is structured as an inverted tree:
+
+1. **Root Nameservers (`.` )**: 13 named root authority systems (replicated via Anycast across hundreds of physical global locations).
+2. **Top-Level Domain (TLD) Nameservers**: Authorities for `.com`, `.org`, `.net`, `.io`.
+3. **Authoritative Nameservers**: The specific server holding the official zone records for a domain (e.g., Cloudflare, Route53, NS1).
+
+```
+                      [ Root Level (.) ]
+                              │
+            ┌─────────────────┼─────────────────┐
+            ▼                 ▼                 ▼
+        [ .com ]           [ .org ]          [ .io ] (TLD)
+            │
+            ▼
+    [ complexity.io ]                          (Authoritative Zone)
+            │
+            ▼
+     A Record: 198.51.100.24
+```
+
+---
+
+## 3. Recursive Resolution in Action
+
+When your application initiates a connection to `api.complexity.io`:
+
+1. **Browser Cache**: Checks if resolved recently.
+2. **OS Resolver Cache**: Checks local operating system cache (`/etc/hosts`, systemd-resolved).
+3. **Recursive Resolver (ISP or 1.1.1.1 / 8.8.8.8)**:
+   - Queries Root (`.`) → receives reference to `.io` TLD server.
+   - Queries `.io` TLD server → receives reference to Authoritative nameserver.
+   - Queries Authoritative nameserver → receives final `A` record (`198.51.100.24`).
+4. **Caching**: Stores result with the configured **TTL (Time To Live)** in seconds.
+
+<InfoCallout type="warning" title="Production Trap: DNS TTL">
+If you set a high TTL (e.g. 86400s / 24 hours) and need to failover to a new server IP during an emergency outage, clients will continue routing traffic to the dead IP until their local TTL expires!
+</InfoCallout>
+
+---
+
+## 4. Knowledge Check
+
+<KnowledgeCheck
+  client:visible
+  question="What happens if a domain's authoritative nameserver goes offline while resolvers still hold unexpired TTL records?"
+  options={[
+    "Clients continue connecting normally to the cached IP address until the TTL expires.",
+    "All client connections immediately fail with NXDOMAIN.",
+    "The internet root servers automatically assign a new IP address to the domain.",
+    "Web browsers switch to peer-to-peer torrent protocol."
+  ]}
+  correctIndex={0}
+  explanation="DNS resolvers cache IP addresses for the duration specified by the TTL record. Even if the authoritative nameserver goes dark, existing cached entries remain valid and clients continue reaching the server until their local TTL reaches zero."
+/>

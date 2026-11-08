@@ -1,0 +1,12 @@
+{
+  "id": "path-engineering-foundations",
+  "slug": "engineering-foundations",
+  "title": "Engineering Foundations",
+  "description": "Master core systems fundamentals from computer networking, processes, and memory to server architecture and operating system primitives.",
+  "difficulty": "beginner",
+  "courseSlugs": [
+    "system-architecture-fundamentals"
+  ],
+  "estimatedDuration": "12 hours",
+  "order": 1
+}

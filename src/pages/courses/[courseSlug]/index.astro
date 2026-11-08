@@ -1,0 +1,161 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CourseHeader from '@/components/course/CourseHeader.astro';
+import CourseProgress from '@/components/course/CourseProgress';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import Badge from '@/components/ui/Badge.astro';
+import { getAllCourses, getCourseBySlug } from '@/lib/content/course-loader';
+import { getChaptersByCourseId } from '@/lib/content/chapter-loader';
+import { getLessonsByChapterId } from '@/lib/content/lesson-loader';
+import { formatPath } from '@/lib/utilities/url';
+import { ArrowRight, BookOpen, CheckCircle, Clock } from 'lucide-react';
+
+export async function getStaticPaths() {
+  const courses = getAllCourses();
+  return courses.map((course) => ({
+    params: { courseSlug: course.slug }
+  }));
+}
+
+const { courseSlug } = Astro.params;
+const course = getCourseBySlug(courseSlug!);
+
+if (!course) {
+  return Astro.redirect(formatPath('/404'));
+}
+
+const chapters = getChaptersByCourseId(course.slug);
+const chaptersWithLessons = chapters.map((ch) => ({
+  ...ch,
+  lessons: getLessonsByChapterId(ch.id)
+}));
+
+const totalLessons = chaptersWithLessons.reduce((sum, ch) => sum + ch.lessons.length, 0);
+const firstLesson = chaptersWithLessons[0]?.lessons[0];
+const firstLessonUrl = firstLesson
+  ? formatPath(`/courses/${course.slug}/${chaptersWithLessons[0].slug}/${firstLesson.slug}`)
+  : formatPath(`/courses/${course.slug}`);
+
+const breadcrumbs = [
+  { label: 'Courses', href: formatPath('/courses') },
+  { label: course.title }
+];
+---
+
+<BaseLayout
+  title={`${course.title} — Course Overview | Complexity`}
+  description={course.description}
+>
+  <div class="max-w-layout mx-auto px-4 sm:px-6 py-10">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <CourseHeader
+      course={course}
+      chapterCount={chapters.length}
+      lessonCount={totalLessons}
+    />
+
+    <!-- Course Progress & Call to Action -->
+    <CourseProgress
+      client:load
+      courseSlug={course.slug}
+      totalLessons={totalLessons}
+      firstLessonUrl={firstLessonUrl}
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <!-- Left Column: Chapter & Lesson Outline -->
+      <div class="lg:col-span-2 space-y-6">
+        <h2 class="font-editorial text-2xl font-bold text-text-primary mb-4">
+          Curriculum Outline
+        </h2>
+
+        <div class="space-y-4">
+          {chaptersWithLessons.map((chapter, idx) => (
+            <div class="rounded-lg border border-border-subtle bg-surface overflow-hidden">
+              <div class="p-4 sm:p-5 border-b border-border-subtle bg-surface-elevated/50 flex items-center justify-between">
+                <div>
+                  <span class="font-mono text-[10px] text-text-muted uppercase tracking-wider block mb-0.5">
+                    CHAPTER {idx + 1}
+                  </span>
+                  <h3 class="font-technical text-base font-bold text-text-primary">
+                    {chapter.title}
+                  </h3>
+                  <p class="text-xs text-text-secondary mt-1">
+                    {chapter.description}
+                  </p>
+                </div>
+                <span class="font-mono text-xs text-text-muted whitespace-nowrap pl-4">
+                  {chapter.lessons.length} {chapter.lessons.length === 1 ? 'lesson' : 'lessons'}
+                </span>
+              </div>
+
+              <div class="divide-y divide-border-subtle">
+                {chapter.lessons.map((lesson, lIdx) => (
+                  <a
+                    href={formatPath(`/courses/${course.slug}/${chapter.slug}/${lesson.slug}`)}
+                    class="group p-4 flex items-center justify-between hover:bg-surface-elevated transition-colors"
+                  >
+                    <div class="flex items-start gap-3">
+                      <span class="font-mono text-xs text-text-muted mt-0.5">
+                        {idx + 1}.{lIdx + 1}
+                      </span>
+                      <div>
+                        <h4 class="font-technical text-sm font-medium text-text-primary group-hover:text-brand transition-colors">
+                          {lesson.title}
+                        </h4>
+                        <p class="text-xs text-text-secondary line-clamp-1 mt-0.5">
+                          {lesson.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 pl-4 flex-shrink-0">
+                      <span class="text-[11px] font-mono text-text-muted hidden sm:inline-block">
+                        {lesson.estimatedReadingTime} min
+                      </span>
+                      <ArrowRight class="w-4 h-4 text-text-muted group-hover:text-brand group-hover:translate-x-0.5 transition-all" />
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Right Column: Prerequisites & Learning Objectives -->
+      <div class="space-y-6">
+        <!-- Objectives Card -->
+        <div class="rounded-lg border border-border-subtle bg-surface p-5">
+          <h3 class="font-technical text-sm font-bold text-text-primary uppercase tracking-wider mb-3">
+            What You Will Learn
+          </h3>
+          <ul class="space-y-2 text-xs text-text-secondary">
+            {course.learningObjectives.map((obj) => (
+              <li class="flex items-start gap-2">
+                <span class="text-brand font-bold mt-0.5">✓</span>
+                <span class="leading-relaxed">{obj}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Prerequisites Card -->
+        <div class="rounded-lg border border-border-subtle bg-surface p-5">
+          <h3 class="font-technical text-sm font-bold text-text-primary uppercase tracking-wider mb-3">
+            Prerequisites
+          </h3>
+          <ul class="space-y-2 text-xs text-text-secondary">
+            {course.prerequisites.map((pre) => (
+              <li class="flex items-start gap-2">
+                <span class="text-text-muted font-bold mt-0.5">•</span>
+                <span class="leading-relaxed">{pre}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

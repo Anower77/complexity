@@ -1,0 +1,67 @@
+---
+import Badge from '@/components/ui/Badge.astro';
+import { formatDuration } from '@/lib/utilities/format-duration';
+import type { Lesson } from '@/types/lesson';
+import { Clock, BarChart2 } from 'lucide-react';
+
+interface Props {
+  lesson: Lesson;
+  chapterTitle?: string;
+}
+
+const { lesson, chapterTitle } = Astro.props;
+
+const difficultyVariant = {
+  beginner: 'success',
+  intermediate: 'warning',
+  advanced: 'danger'
+}[lesson.difficulty] as 'success' | 'warning' | 'danger';
+---
+
+<header class="mb-8 pb-6 border-b border-border-subtle">
+  {chapterTitle && (
+    <div class="font-mono text-xs uppercase tracking-wider text-brand font-semibold mb-2">
+      {chapterTitle}
+    </div>
+  )}
+
+  <h1 class="font-editorial text-3xl sm:text-4xl font-bold tracking-tight text-text-primary mb-3">
+    {lesson.title}
+  </h1>
+
+  <p class="text-base text-text-secondary leading-relaxed mb-4 max-w-2xl font-technical">
+    {lesson.description}
+  </p>
+
+  <div class="flex items-center flex-wrap gap-3 text-xs text-text-muted font-mono">
+    <div class="flex items-center gap-1.5">
+      <Clock className="w-3.5 h-3.5" />
+      <span>{formatDuration(lesson.estimatedReadingTime)}</span>
+    </div>
+
+    <span class="text-border-strong">•</span>
+
+    <div class="flex items-center gap-1.5">
+      <BarChart2 className="w-3.5 h-3.5" />
+      <Badge variant={difficultyVariant} size="sm">
+        {lesson.difficulty.toUpperCase()}
+      </Badge>
+    </div>
+  </div>
+
+  {lesson.objectives && lesson.objectives.length > 0 && (
+    <div class="mt-6 p-4 rounded-lg bg-surface-elevated border border-border-subtle">
+      <div class="font-mono text-xs font-semibold text-text-primary uppercase tracking-wider mb-2">
+        Learning Objectives
+      </div>
+      <ul class="space-y-1.5 text-xs text-text-secondary">
+        {lesson.objectives.map((obj) => (
+          <li class="flex items-start gap-2">
+            <span class="text-brand font-bold">✓</span>
+            <span>{obj}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</header>

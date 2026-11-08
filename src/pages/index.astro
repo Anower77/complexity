@@ -1,0 +1,160 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CourseCard from '@/components/course/CourseCard.astro';
+import Button from '@/components/ui/Button.astro';
+import Badge from '@/components/ui/Badge.astro';
+import { getAllCourses } from '@/lib/content/course-loader';
+import { getAllLessons } from '@/lib/content/lesson-loader';
+import { formatPath } from '@/lib/utilities/url';
+import { ArrowRight, BookOpen, Layers, Terminal, ShieldAlert, Cpu } from 'lucide-react';
+
+const courses = getAllCourses();
+const allLessons = getAllLessons();
+const sampleCourse = courses[0];
+---
+
+<BaseLayout
+  title="Complexity — Interactive Engineering Education"
+  description="Understand how systems work, why they break, and how engineers design them to scale."
+>
+  <!-- Hero Section -->
+  <section class="border-b border-border-subtle bg-surface/50 py-16 sm:py-24 px-4 sm:px-6">
+    <div class="max-w-layout mx-auto">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-subtle border border-brand-border text-brand text-xs font-mono mb-6">
+          <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+          <span>INTERACTIVE ENGINEERING PLATFORM</span>
+        </div>
+
+        <h1 class="font-editorial text-4xl sm:text-6xl font-bold tracking-tight text-text-primary leading-[1.1] mb-6">
+          Understand how systems work, <span class="italic text-brand">why they break</span>, and how to scale them.
+        </h1>
+
+        <p class="font-technical text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl">
+          Complexity is a course-oriented technical learning platform. We deconstruct backend infrastructure, network lifecycles, and distributed architecture through interactive diagrams and first-principles lessons.
+        </p>
+
+        <div class="flex items-center flex-wrap gap-4">
+          <Button href={formatPath('/courses')} variant="primary" size="lg">
+            <span>Browse Courses</span>
+            <ArrowRight class="w-4 h-4" />
+          </Button>
+
+          <Button href={formatPath('/learn')} variant="secondary" size="lg">
+            <span>View Learning Paths</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Pillars -->
+  <section class="border-b border-border-subtle py-12 px-4 sm:px-6 bg-surface">
+    <div class="max-w-layout mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="p-5 rounded-lg border border-border-subtle bg-surface-elevated/50">
+        <div class="w-8 h-8 rounded-md bg-brand-subtle text-brand flex items-center justify-center mb-3">
+          <Layers class="w-4 h-4" />
+        </div>
+        <h3 class="font-technical text-sm font-bold text-text-primary mb-1">
+          Structured Course Curriculum
+        </h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+          Step-by-step chapters designed around clear learning objectives, prerequisites, and persistent progress tracking.
+        </p>
+      </div>
+
+      <div class="p-5 rounded-lg border border-border-subtle bg-surface-elevated/50">
+        <div class="w-8 h-8 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3">
+          <Cpu class="w-4 h-4" />
+        </div>
+        <h3 class="font-technical text-sm font-bold text-text-primary mb-1">
+          Interactive Architecture Diagrams
+        </h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+          Inspect internal node buffers, connection protocols, and active socket allocations directly on vector diagrams.
+        </p>
+      </div>
+
+      <div class="p-5 rounded-lg border border-border-subtle bg-surface-elevated/50">
+        <div class="w-8 h-8 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center mb-3">
+          <ShieldAlert class="w-4 h-4" />
+        </div>
+        <h3 class="font-technical text-sm font-bold text-text-primary mb-1">
+          Production Failure Scenarios
+        </h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+          Learn how systems degrade during traffic surges, packet drops, socket exhaustion, and network partitions.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Courses -->
+  <section class="py-16 px-4 sm:px-6 max-w-layout mx-auto">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-1">
+          CURRICULUM
+        </div>
+        <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary">
+          Featured Engineering Courses
+        </h2>
+      </div>
+
+      <a
+        href={formatPath('/courses')}
+        class="inline-flex items-center gap-1.5 text-xs font-medium text-brand hover:underline font-technical"
+      >
+        <span>View all courses</span>
+        <ArrowRight class="w-3.5 h-3.5" />
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {courses.map((course) => (
+        <CourseCard course={course} lessonCount={allLessons.filter((l) => l.courseId === course.slug).length} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Recently Added Lessons -->
+  <section class="border-t border-border-subtle py-16 px-4 sm:px-6 bg-surface">
+    <div class="max-w-layout mx-auto">
+      <div class="mb-8">
+        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-1">
+          LATEST ADDITIONS
+        </div>
+        <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary">
+          Recently Added Lessons
+        </h2>
+      </div>
+
+      <div class="divide-y divide-border-subtle border border-border-subtle rounded-lg bg-surface-elevated/30 overflow-hidden">
+        {allLessons.map((lesson) => (
+          <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-surface-elevated/70 transition-colors">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <Badge variant="default" size="sm">{lesson.difficulty.toUpperCase()}</Badge>
+                <span class="text-xs font-mono text-text-muted">{lesson.estimatedReadingTime} min read</span>
+              </div>
+              <h3 class="font-technical text-sm font-bold text-text-primary">
+                {lesson.title}
+              </h3>
+              <p class="text-xs text-text-secondary line-clamp-1 mt-0.5">
+                {lesson.description}
+              </p>
+            </div>
+
+            <a
+              href={formatPath(`/courses/${lesson.courseId}/client-server-architecture/${lesson.slug}`)}
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border-subtle bg-surface hover:border-brand text-xs font-medium text-text-primary hover:text-brand transition-colors whitespace-nowrap self-start sm:self-center"
+            >
+              <span>Read Lesson</span>
+              <ArrowRight class="w-3.5 h-3.5" />
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

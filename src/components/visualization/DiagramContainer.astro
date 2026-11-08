@@ -1,0 +1,34 @@
+---
+interface Props {
+  title: string;
+  caption?: string;
+  class?: string;
+}
+
+const { title, caption, class: className = '' } = Astro.props;
+---
+
+<figure class={`my-8 rounded-lg border border-border-subtle bg-surface overflow-hidden ${className}`}>
+  <!-- Header Bar -->
+  <div class="flex items-center justify-between px-4 py-2.5 border-b border-border-subtle bg-surface-elevated">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-brand"></span>
+      <span class="font-mono text-xs font-semibold uppercase tracking-wider text-text-primary">
+        {title}
+      </span>
+    </div>
+    <span class="font-mono text-[10px] text-text-muted">ARCHITECTURE DIAGRAM</span>
+  </div>
+
+  <!-- Canvas Body with Technical Grid Background -->
+  <div class="relative p-6 sm:p-8 flex items-center justify-center min-h-[220px] bg-[radial-gradient(var(--border-subtle)_1px,transparent_1px)] [background-size:16px_16px]">
+    <slot />
+  </div>
+
+  <!-- Footer Caption -->
+  {caption && (
+    <figcaption class="px-4 py-2 border-t border-border-subtle bg-surface-elevated text-xs text-text-muted font-mono leading-relaxed">
+      {caption}
+    </figcaption>
+  )}
+</figure>

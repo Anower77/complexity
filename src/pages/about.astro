@@ -1,0 +1,69 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import { formatPath } from '@/lib/utilities/url';
+import { Terminal, Cpu, BookOpen, Layers } from 'lucide-react';
+
+const breadcrumbs = [
+  { label: 'About' }
+];
+---
+
+<BaseLayout
+  title="About Complexity — Editorial Engineering Education"
+  description="The vision, philosophy, and architectural standards behind the Complexity platform."
+>
+  <div class="max-w-reading mx-auto px-4 sm:px-6 py-10">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="mb-10 pb-6 border-b border-border-subtle">
+      <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
+        EDITORIAL MANIFESTO
+      </div>
+      <h1 class="font-editorial text-4xl sm:text-5xl font-bold text-text-primary tracking-tight mb-4">
+        Engineering Without Magic
+      </h1>
+      <p class="text-lg text-text-secondary font-technical leading-relaxed">
+        Complexity was founded on a simple conviction: modern software architecture is frequently taught through buzzwords, shallow summaries, or disjointed blog posts. We believe engineers learn best through structured courses, rigorous storytelling, and observable systems.
+      </p>
+    </header>
+
+    <div class="prose-complexity space-y-6">
+      <h2>The Seven Fundamental Questions</h2>
+      <p>
+        Every technology, protocol, or architectural design on Complexity must answer seven core questions:
+      </p>
+      <ol>
+        <li><strong>Why does it exist?</strong> What historic wall or bottleneck led to its creation?</li>
+        <li><strong>What problem does it solve?</strong> Exactly what pain point does it address?</li>
+        <li><strong>How does it work internally?</strong> Sockets, memory buffers, syscalls, and state machines.</li>
+        <li><strong>What happens when it receives real traffic?</strong> Connection pooling and concurrency limits.</li>
+        <li><strong>What happens when it fails?</strong> Dropped packets, network partitions, and thundering herds.</li>
+        <li><strong>What alternatives exist?</strong> Clear comparison matrices and trade-offs.</li>
+        <li><strong>Why would an engineering team choose it?</strong> Production decision criteria.</li>
+      </ol>
+
+      <h2>Course-Based Learning</h2>
+      <p>
+        Inspired by the structured pedagogical clarity of platforms like ByteByteGo, Complexity organizes knowledge into cohesive, multi-chapter courses rather than isolated blog posts.
+      </p>
+      <p>
+        Readers progress through lessons with persistent course navigation, measurable completion indicators saved to their browser, and interactive diagrams that illustrate the physical and logical movement of packets.
+      </p>
+
+      <h2>Open Architecture</h2>
+      <p>
+        Complexity is statically generated, fast, and completely free of tracking trackers or heavy client-side runtimes. Built with Astro, React islands, TypeScript, and Tailwind CSS.
+      </p>
+
+      <div class="pt-8 border-t border-border-subtle not-prose">
+        <a
+          href={formatPath('/courses')}
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-brand text-white font-medium text-sm hover:bg-brand-hover transition-colors"
+        >
+          <span>Explore All Courses</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

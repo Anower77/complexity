@@ -1,0 +1,55 @@
+---
+import Badge from '@/components/ui/Badge.astro';
+import type { Course } from '@/types/course';
+import { Clock, BookOpen, Layers } from 'lucide-react';
+
+interface Props {
+  course: Course;
+  chapterCount: number;
+  lessonCount: number;
+}
+
+const { course, chapterCount, lessonCount } = Astro.props;
+
+const difficultyVariant = {
+  beginner: 'success',
+  intermediate: 'warning',
+  advanced: 'danger'
+}[course.difficulty] as 'success' | 'warning' | 'danger';
+---
+
+<header class="mb-10 pb-8 border-b border-border-subtle">
+  <div class="flex items-center gap-2 mb-3">
+    <Badge variant={difficultyVariant} size="sm">
+      {course.difficulty.toUpperCase()}
+    </Badge>
+    {course.metadata?.category && (
+      <span class="font-mono text-xs text-text-muted">
+        • {course.metadata.category}
+      </span>
+    )}
+  </div>
+
+  <h1 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary tracking-tight mb-4">
+    {course.title}
+  </h1>
+
+  <p class="text-base text-text-secondary leading-relaxed max-w-3xl mb-6 font-technical">
+    {course.description}
+  </p>
+
+  <div class="flex items-center flex-wrap gap-5 text-xs font-mono text-text-muted">
+    <div class="flex items-center gap-1.5">
+      <Clock className="w-4 h-4 text-brand" />
+      <span>{course.estimatedDuration}</span>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <Layers className="w-4 h-4 text-brand" />
+      <span>{chapterCount} chapters</span>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <BookOpen className="w-4 h-4 text-brand" />
+      <span>{lessonCount} lessons</span>
+    </div>
+  </div>
+</header>

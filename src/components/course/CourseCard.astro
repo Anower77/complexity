@@ -1,0 +1,56 @@
+---
+import Badge from '@/components/ui/Badge.astro';
+import type { Course } from '@/types/course';
+import { formatPath } from '@/lib/utilities/url';
+import { BookOpen, Clock, ArrowRight } from 'lucide-react';
+
+interface Props {
+  course: Course;
+  lessonCount?: number;
+}
+
+const { course, lessonCount = 3 } = Astro.props;
+
+const difficultyVariant = {
+  beginner: 'success',
+  intermediate: 'warning',
+  advanced: 'danger'
+}[course.difficulty] as 'success' | 'warning' | 'danger';
+---
+
+<div class="group rounded-lg border border-border-subtle bg-surface hover:border-border-strong hover:shadow-md transition-all p-5 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between gap-2 mb-3">
+      <Badge variant={difficultyVariant} size="sm">
+        {course.difficulty.toUpperCase()}
+      </Badge>
+      <div class="flex items-center gap-1.5 text-[11px] font-mono text-text-muted">
+        <Clock className="w-3.5 h-3.5" />
+        <span>{course.estimatedDuration}</span>
+      </div>
+    </div>
+
+    <h3 class="font-technical text-base font-bold text-text-primary group-hover:text-brand transition-colors mb-2 line-clamp-1">
+      {course.title}
+    </h3>
+
+    <p class="text-xs text-text-secondary leading-relaxed line-clamp-3 mb-4">
+      {course.description}
+    </p>
+  </div>
+
+  <div class="pt-4 border-t border-border-subtle flex items-center justify-between mt-auto">
+    <div class="flex items-center gap-1.5 text-xs font-mono text-text-muted">
+      <BookOpen className="w-3.5 h-3.5" />
+      <span>{lessonCount} lessons</span>
+    </div>
+
+    <a
+      href={formatPath(`/courses/${course.slug}`)}
+      class="inline-flex items-center gap-1 text-xs font-medium text-brand hover:underline font-technical"
+    >
+      <span>Explore Course</span>
+      <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+    </a>
+  </div>
+</div>

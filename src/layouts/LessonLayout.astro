@@ -1,0 +1,78 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import CourseSidebar from '@/components/navigation/CourseSidebar';
+import MobileCourseNavigation from '@/components/navigation/MobileCourseNavigation';
+import TableOfContents from '@/components/navigation/TableOfContents';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import LessonHeader from '@/components/lesson/LessonHeader.astro';
+import LessonFooter from '@/components/lesson/LessonFooter.astro';
+import type { Lesson } from '@/types/lesson';
+import type { CourseNavigationData, PreviousNextNavigation, TableOfContentItem } from '@/types/navigation';
+import { formatPath } from '@/lib/utilities/url';
+
+interface Props {
+  lesson: Lesson;
+  courseTitle: string;
+  chapterTitle: string;
+  chapterSlug: string;
+  navigation: CourseNavigationData;
+  prevNext: PreviousNextNavigation;
+  headings: TableOfContentItem[];
+}
+
+const {
+  lesson,
+  courseTitle,
+  chapterTitle,
+  chapterSlug,
+  navigation,
+  prevNext,
+  headings
+} = Astro.props;
+
+const breadcrumbs = [
+  { label: 'Courses', href: formatPath('/courses') },
+  { label: courseTitle, href: formatPath(`/courses/${navigation.courseSlug}`) },
+  { label: chapterTitle },
+  { label: lesson.title }
+];
+---
+
+<BaseLayout
+  title={`${lesson.title} — ${courseTitle} | Complexity`}
+  description={lesson.description}
+  hideFooter={true}
+>
+  <!-- Mobile Navigation Bar -->
+  <MobileCourseNavigation client:load navigation={navigation} />
+
+  <!-- 3-Column Lesson Architecture -->
+  <div class="flex-1 flex max-w-layout mx-auto w-full">
+    <!-- Left Sidebar: Course Curriculum Navigation -->
+    <div class="hidden md:block sticky top-14 h-[calc(100vh-3.5rem)] flex-shrink-0">
+      <CourseSidebar client:load navigation={navigation} />
+    </div>
+
+    <!-- Center Column: Primary Reading Canvas -->
+    <div class="flex-1 min-w-0 px-4 sm:px-8 lg:px-12 py-8 max-w-content mx-auto">
+      <Breadcrumbs items={breadcrumbs} />
+      <LessonHeader lesson={lesson} chapterTitle={chapterTitle} />
+
+      <article class="prose-complexity">
+        <slot />
+      </article>
+
+      <LessonFooter
+        lesson={lesson}
+        courseSlug={navigation.courseSlug}
+        chapterSlug={chapterSlug}
+        navigation={prevNext}
+      />
+    </div>
+
+    <!-- Right Sidebar: On-page Table of Contents & Reading Progress -->
+    <div class="hidden xl:block flex-shrink-0">
+      <TableOfContents client:load items={headings} />
+    </div>
+  </div>
+</BaseLayout>

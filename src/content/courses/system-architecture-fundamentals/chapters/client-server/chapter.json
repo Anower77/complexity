@@ -1,0 +1,12 @@
+{
+  "id": "chapter-client-server",
+  "slug": "client-server-architecture",
+  "courseId": "system-architecture-fundamentals",
+  "title": "Client-Server Architecture",
+  "description": "Examine the primary communication architecture of the modern web, from transport protocols to application listeners.",
+  "order": 1,
+  "lessonIds": [
+    "introduction-to-client-server",
+    "request-lifecycle-and-protocols"
+  ]
+}

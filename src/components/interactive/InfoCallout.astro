@@ -1,0 +1,46 @@
+---
+interface Props {
+  type?: 'note' | 'tip' | 'warning' | 'danger';
+  title?: string;
+  class?: string;
+}
+
+const { type = 'note', title, class: className = '' } = Astro.props;
+
+const styles = {
+  note: {
+    wrapper: 'bg-surface-elevated border-border-strong text-text-primary',
+    badge: 'bg-surface-muted text-text-secondary border-border-subtle',
+    label: 'NOTE'
+  },
+  tip: {
+    wrapper: 'bg-brand-subtle/50 border-brand-border text-text-primary',
+    badge: 'bg-brand-subtle text-brand border-brand-border',
+    label: 'ENGINEERING TIP'
+  },
+  warning: {
+    wrapper: 'bg-amber-500/5 border-amber-500/30 text-text-primary',
+    badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+    label: 'WARNING'
+  },
+  danger: {
+    wrapper: 'bg-red-500/5 border-red-500/30 text-text-primary',
+    badge: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
+    label: 'FAILURE MODE'
+  }
+};
+
+const current = styles[type];
+---
+
+<div class={`my-6 rounded-lg border p-4.5 ${current.wrapper} ${className}`} role="alert">
+  <div class="flex items-center gap-2 mb-2">
+    <span class={`font-mono text-[10px] font-semibold px-2 py-0.5 rounded border ${current.badge}`}>
+      {current.label}
+    </span>
+    {title && <span class="font-technical text-sm font-semibold text-text-primary">{title}</span>}
+  </div>
+  <div class="text-sm leading-relaxed text-text-secondary prose-complexity">
+    <slot />
+  </div>
+</div>

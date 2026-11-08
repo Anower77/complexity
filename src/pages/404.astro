@@ -1,0 +1,37 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/ui/Button.astro';
+import { formatPath } from '@/lib/utilities/url';
+import { ArrowLeft, Home, BookOpen } from 'lucide-react';
+---
+
+<BaseLayout
+  title="404: Route Not Found — Complexity"
+  description="The requested engineering resource or lesson could not be located."
+>
+  <div class="max-w-md mx-auto px-4 py-24 text-center">
+    <div class="font-mono text-xs font-semibold text-brand uppercase tracking-wider mb-2">
+      STATUS 404
+    </div>
+
+    <h1 class="font-editorial text-4xl sm:text-5xl font-bold text-text-primary mb-4">
+      Resource Not Found
+    </h1>
+
+    <p class="text-sm text-text-secondary font-technical leading-relaxed mb-8">
+      The network packet addressed to this route could not be resolved. The lesson may have been moved, or the URL path may be invalid.
+    </p>
+
+    <div class="flex items-center justify-center gap-3">
+      <Button href={formatPath('/')} variant="primary" size="md">
+        <Home class="w-4 h-4" />
+        <span>Return Home</span>
+      </Button>
+
+      <Button href={formatPath('/courses')} variant="secondary" size="md">
+        <BookOpen class="w-4 h-4" />
+        <span>Browse Courses</span>
+      </Button>
+    </div>
+  </div>
+</BaseLayout>

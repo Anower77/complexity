@@ -1,0 +1,53 @@
+---
+import type { PreviousNextNavigation } from '@/types/navigation';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+
+interface Props {
+  navigation: PreviousNextNavigation;
+}
+
+const { navigation } = Astro.props;
+const { previous, next } = navigation;
+---
+
+<nav aria-label="Previous and Next Lessons" class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-10 pt-6 border-t border-border-subtle">
+  {previous ? (
+    <a
+      href={previous.url}
+      class="group flex flex-col p-4 rounded-lg border border-border-subtle hover:border-brand bg-surface hover:bg-surface-elevated transition-all"
+    >
+      <div class="flex items-center gap-1.5 text-[11px] font-mono text-text-muted group-hover:text-brand mb-1">
+        <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+        <span>PREVIOUS LESSON</span>
+      </div>
+      <div class="font-technical text-sm font-semibold text-text-primary group-hover:text-brand transition-colors line-clamp-1">
+        {previous.title}
+      </div>
+      <div class="text-[11px] text-text-muted font-mono mt-0.5 line-clamp-1">
+        {previous.chapterTitle}
+      </div>
+    </a>
+  ) : (
+    <div class="hidden sm:block" />
+  )}
+
+  {next ? (
+    <a
+      href={next.url}
+      class="group flex flex-col items-end text-right p-4 rounded-lg border border-border-subtle hover:border-brand bg-surface hover:bg-surface-elevated transition-all sm:col-start-2"
+    >
+      <div class="flex items-center gap-1.5 text-[11px] font-mono text-text-muted group-hover:text-brand mb-1">
+        <span>NEXT LESSON</span>
+        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+      </div>
+      <div class="font-technical text-sm font-semibold text-text-primary group-hover:text-brand transition-colors line-clamp-1">
+        {next.title}
+      </div>
+      <div class="text-[11px] text-text-muted font-mono mt-0.5 line-clamp-1">
+        {next.chapterTitle}
+      </div>
+    </a>
+  ) : (
+    <div class="hidden sm:block" />
+  )}
+</nav>

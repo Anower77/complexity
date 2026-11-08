@@ -1,0 +1,61 @@
+---
+import LessonLayout from '@/layouts/LessonLayout.astro';
+import { getAllCourses, getCourseBySlug } from '@/lib/content/course-loader';
+import { getAllChapters, getChapterBySlug } from '@/lib/content/chapter-loader';
+import { getAllLessons, getLessonBySlug } from '@/lib/content/lesson-loader';
+import { buildCourseNavigation, getPreviousNextLessons } from '@/lib/content/navigation-builder';
+import { formatPath } from '@/lib/utilities/url';
+
+export async function getStaticPaths() {
+  const lessons = getAllLessons();
+  const chapters = getAllChapters();
+
+  return lessons.map((lesson) => {
+    const parentChapter = chapters.find((ch) => ch.id === lesson.chapterId);
+    return {
+      params: {
+        courseSlug: lesson.courseId,
+        chapterSlug: parentChapter ? parentChapter.slug : 'chapter',
+        lessonSlug: lesson.slug
+      }
+    };
+  });
+}
+
+const { courseSlug, chapterSlug, lessonSlug } = Astro.params;
+
+const course = getCourseBySlug(courseSlug!);
+const chapter = getChapterBySlug(courseSlug!, chapterSlug!);
+const lesson = getLessonBySlug(courseSlug!, lessonSlug!);
+
+if (!course || !chapter || !lesson) {
+  return Astro.redirect(formatPath('/404'));
+}
+
+const navigation = buildCourseNavigation(course.slug, chapter.slug, lesson.slug);
+const prevNext = getPreviousNextLessons(course.slug, lesson.slug);
+
+// Dynamically import the compiled MDX component in Astro
+const mdxModules = import.meta.glob('/src/content/courses/**/lessons/*.mdx');
+let ContentComponent: any = null;
+
+for (const [filePath, importFn] of Object.entries(mdxModules)) {
+  if (filePath.endsWith(`/${lesson.slug}.mdx`) || filePath.includes(lesson.slug)) {
+    const mod: any = await importFn();
+    ContentComponent = mod.Content || mod.default;
+    break;
+  }
+}
+---
+
+<LessonLayout
+  lesson={lesson}
+  courseTitle={course.title}
+  chapterTitle={chapter.title}
+  chapterSlug={chapter.slug}
+  navigation={navigation!}
+  prevNext={prevNext}
+  headings={lesson.headings}
+>
+  {ContentComponent && <ContentComponent />}
+</LessonLayout>

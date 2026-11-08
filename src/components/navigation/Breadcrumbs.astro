@@ -1,0 +1,39 @@
+---
+import { formatPath } from '@/lib/utilities/url';
+
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="mb-4">
+  <ol class="flex items-center flex-wrap gap-1.5 text-xs text-text-muted">
+    <li>
+      <a href={formatPath('/')} class="hover:text-text-primary transition-colors">Home</a>
+    </li>
+    {items.map((item, index) => {
+      const isLast = index === items.length - 1;
+      return (
+        <li class="flex items-center gap-1.5">
+          <span class="text-border-strong select-none">/</span>
+          {item.href && !isLast ? (
+            <a href={item.href} class="hover:text-text-primary transition-colors max-w-[200px] truncate">
+              {item.label}
+            </a>
+          ) : (
+            <span class="text-text-secondary font-medium max-w-[250px] truncate" aria-current={isLast ? 'page' : undefined}>
+              {item.label}
+            </span>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

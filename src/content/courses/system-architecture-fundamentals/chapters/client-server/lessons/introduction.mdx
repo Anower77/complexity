@@ -1,0 +1,159 @@
+---
+id: "introduction-to-client-server"
+slug: "introduction-to-client-server"
+chapterId: "chapter-client-server"
+courseId: "system-architecture-fundamentals"
+title: "Introduction to Client-Server Architecture"
+description: "Deconstructing the fundamental communication paradigm that powers the modern internet."
+order: 1
+difficulty: "beginner"
+estimatedReadingTime: 7
+objectives:
+  - "Understand the fundamental boundary between clients and servers"
+  - "Explore network socket bindings, port multiplexing, and connection lifecycles"
+  - "Analyze why statelessness enables horizontal scaling"
+prerequisites:
+  - "Basic awareness of IP addresses and ports"
+status: "published"
+relatedLessons:
+  - "request-lifecycle-and-protocols"
+references:
+  - title: "RFC 9110: HTTP Semantics"
+    url: "https://www.rfc-editor.org/rfc/rfc9110"
+    type: "rfc"
+  - title: "Unix Network Programming by W. Richard Stevens"
+    url: "https://en.wikipedia.org/wiki/W._Richard_Stevens"
+    type: "book"
+---
+
+import InfoCallout from '@/components/interactive/InfoCallout.astro';
+import ComparisonTable from '@/components/interactive/ComparisonTable.astro';
+import KnowledgeCheck from '@/components/interactive/KnowledgeCheck';
+import DiagramContainer from '@/components/visualization/DiagramContainer.astro';
+import InteractiveDiagram from '@/components/visualization/InteractiveDiagram';
+
+## 1. The Core Paradigm
+
+At the core of virtually every distributed system lies a simple separation of responsibilities: **Client-Server Architecture**.
+
+In this model:
+- The **Client** initiates requests. It is typically user-facing (a browser, mobile application, CLI tool, or IoT sensor) and responsible for user interactions and presentation logic.
+- The **Server** passively listens on a network interface for incoming connections. It is responsible for authorization, data consistency, business logic execution, and persistence.
+
+<InfoCallout type="note" title="Engineering Invariant">
+Clients and servers are roles defined by network behavior, not hardware types. A backend service acting as a server to incoming user requests frequently acts as a client when fetching data from an upstream PostgreSQL database or Redis cluster.
+</InfoCallout>
+
+---
+
+## 2. System Topology & Connection Flow
+
+The diagram below illustrates the boundary between client devices, the network demarcation, and server listeners. Click any node to inspect its internal properties.
+
+<DiagramContainer title="Client-Server Communication Topology" caption="Clients initiate TCP/TLS connections to server listeners bound on specific IP ports.">
+  <InteractiveDiagram 
+    client:visible
+    data={{
+      title: "Client-Server Topology",
+      caption: "Interactive inspection of network roles",
+      nodes: [
+        {
+          id: "client-browser",
+          label: "Web Browser (Client)",
+          type: "client",
+          description: "Runs on user hardware. Initiates TCP connection, sends HTTP request, renders response.",
+          status: "operational",
+          metrics: { "Active Sockets": "6", "Outbound Port": "54231", "Protocol": "HTTP/2" }
+        },
+        {
+          id: "server-gateway",
+          label: "API Gateway (Server Listener)",
+          type: "gateway",
+          description: "Bound to 0.0.0.0:443. Manages TLS termination, rate limiting, and forwards to services.",
+          status: "operational",
+          metrics: { "Listening Port": "443", "Active Conns": "12,450", "QPS": "8,200" }
+        },
+        {
+          id: "server-backend",
+          label: "Application Service",
+          type: "service",
+          description: "Executes business logic, queries data layer, and formats JSON payload.",
+          status: "operational",
+          metrics: { "CPU": "34%", "Memory": "1.2GB", "Worker Threads": "16" }
+        }
+      ],
+      connections: [
+        { from: "client-browser", to: "server-gateway", label: "TLS 1.3 / TCP", isAnimated: true },
+        { from: "server-gateway", to: "server-backend", label: "Internal RPC", isAnimated: true }
+      ]
+    }}
+  />
+</DiagramContainer>
+
+---
+
+## 3. Why Did Client-Server Win Over Peer-to-Peer?
+
+In the early decades of networking, peer-to-peer (P2P) and mainframe terminal architectures competed for dominance. Client-server architecture prevailed for commercial software engineering due to distinct operational trade-offs:
+
+<ComparisonTable
+  headers={["Dimension", "Client-Server Architecture", "Peer-to-Peer (P2P)"]}
+  rows={[
+    ["State Authorization", "Centralized server enforces authorization and consistency", "Decentralized consensus required; vulnerable to bad actors"],
+    ["Update Velocity", "Deploy code once to server; instantly live for all clients", "Requires all peer nodes to upgrade software independently"],
+    ["Bandwidth Model", "High server egress bandwidth; minimal client uplink", "Symmetric bandwidth usage across all participants"],
+    ["Failure Blast Radius", "Server outage affects all clients unless redundant", "Network resilient to individual node dropouts"]
+  ]}
+/>
+
+---
+
+## 4. The Principle of Statelessness
+
+Modern scalable client-server systems operate under the **Stateless Protocol** invariant. 
+
+A protocol is *stateless* if each individual request from a client to a server contains all the contextual information necessary for the server to understand and authorize the request. The server does not store active session context in its local memory between consecutive requests.
+
+```
+┌─────────────────┐                       ┌─────────────────┐
+│     Client      │                       │     Server      │
+└────────┬────────┘                       └────────┬────────┘
+         │                                         │
+         │  GET /cart?user=42 (Includes Auth Token)│
+         │────────────────────────────────────────►│ Validates Token
+         │                                         │ Reads Cart from DB
+         │  200 OK [Item 1, Item 2]                │
+         │◄────────────────────────────────────────│
+         │                                         │ (Server memory cleared)
+         │                                         │
+         │  POST /checkout (Includes Auth Token)   │ Any server in pool
+         │────────────────────────────────────────►│ can handle this!
+         │                                         │
+```
+
+If Server A crashes between request #1 and request #2, a load balancer can seamlessly route request #2 to Server B without the user noticing any session loss.
+
+---
+
+## 5. Knowledge Check
+
+<KnowledgeCheck
+  client:visible
+  question="Why does storing user session state in an application server's local RAM violate stateless horizontal scaling?"
+  options={[
+    "It prevents subsequent requests from that user from being processed by any server other than the specific server holding the memory state.",
+    "It causes network sockets to instantly terminate when RAM utilization exceeds 50%.",
+    "It makes TCP handshakes take twice as long due to packet retransmissions.",
+    "It violates the POSIX file descriptor limit on modern Linux servers."
+  ]}
+  correctIndex={0}
+  explanation="When state is stored in a server's local memory, subsequent requests from that client must be pinned to that specific machine (sticky sessions). If that machine fails or traffic surges, other machines cannot seamlessly take over without losing the user's session."
+/>
+
+---
+
+## 6. Key Takeaways
+
+1. **Roles, Not Hardware**: Clients initiate connections; servers listen and respond.
+2. **Stateless Scalability**: Moving session state into distributed storage (e.g., Redis or database) allows web servers to be spun up or down horizontally on demand.
+3. **Connection Lifecycle**: Every HTTP request involves socket allocation, transport handshakes, payload serialization, and socket cleanup.

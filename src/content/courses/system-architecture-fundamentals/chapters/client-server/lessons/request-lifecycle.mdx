@@ -1,0 +1,109 @@
+---
+id: "request-lifecycle-and-protocols"
+slug: "request-lifecycle-and-protocols"
+chapterId: "chapter-client-server"
+courseId: "system-architecture-fundamentals"
+title: "Request Lifecycle & Transport Protocols"
+description: "Tracing a network packet from socket allocation to application dispatch and transport acknowledgment."
+order: 2
+difficulty: "beginner"
+estimatedReadingTime: 9
+objectives:
+  - "Trace an HTTP request from browser network stack to server execution"
+  - "Understand the differences between TCP connection-oriented and UDP datagram flows"
+  - "Inspect how Keep-Alive connections reuse underlying transport sockets"
+prerequisites:
+  - "Introduction to Client-Server Architecture"
+status: "published"
+relatedLessons:
+  - "introduction-to-client-server"
+  - "dns-resolution-and-sockets"
+references:
+  - title: "RFC 793: Transmission Control Protocol"
+    url: "https://www.rfc-editor.org/rfc/rfc793"
+    type: "rfc"
+---
+
+import InfoCallout from '@/components/interactive/InfoCallout.astro';
+import KnowledgeCheck from '@/components/interactive/KnowledgeCheck';
+
+## 1. Journey of a Network Packet
+
+When an engineering application sends an HTTP request, the abstraction hides multiple operating system and hardware layers.
+
+Every request traverses five distinct phases:
+
+1. **DNS Resolution**: The host domain name is converted to an IP address.
+2. **TCP 3-Way Handshake**: A reliable transport stream is established (`SYN` → `SYN-ACK` → `ACK`).
+3. **TLS Encryption Handshake**: Symmetric session keys are negotiated for encrypted HTTPS.
+4. **Application Dispatch**: The web server reads bytes from the socket buffer and parses HTTP headers.
+5. **Connection Termination or Reuse**: Sockets are either closed (`FIN`/`ACK`) or preserved via `Connection: keep-alive`.
+
+```
+Client Stack                                               Server Stack
+┌────────────────────────┐                             ┌────────────────────────┐
+│ Application / Browser  │                             │ Application Framework  │
+└───────────┬────────────┘                             └───────────▲────────────┘
+            │ 1. Write()                                           │ 4. Read()
+┌───────────▼────────────┐                             ┌───────────┴────────────┐
+│ OS Kernel Socket Buff  │                             │ OS Kernel Socket Buff  │
+└───────────┬────────────┘                             └───────────▲────────────┘
+            │ 2. IP Packets                                        │ 3. Packets Recv
+┌───────────▼────────────┐        Physical Fiber       ┌───────────┴────────────┐
+│ Network Interface Card ├────────────────────────────►│ Network Interface Card │
+└────────────────────────┘                             └────────────────────────┘
+```
+
+---
+
+## 2. The Socket Abstraction
+
+On Linux and Unix-like operating systems, network connections are exposed to programs as **file descriptors**.
+
+A socket pair is uniquely identified by five parameters (the 5-tuple):
+- **Source IP Address**
+- **Source Port**
+- **Destination IP Address**
+- **Destination Port**
+- **Transport Protocol (TCP/UDP)**
+
+Because a client OS randomly selects an ephemeral source port (e.g., `51234`), a single server listening on port `443` can maintain tens of thousands of concurrent open connections simultaneously!
+
+<InfoCallout type="tip" title="Production Reality">
+Servers rarely run out of ports; instead, they run out of <strong>file descriptors</strong> or kernel memory allocated to socket buffers (`rmem` and `wmem`).
+</InfoCallout>
+
+---
+
+## 3. TCP vs UDP: The Core Trade-Off
+
+Software engineers select transport protocols based on whether **guaranteed delivery** or **lowest latency** is the primary requirement.
+
+- **TCP (Transmission Control Protocol)**:
+  - Connection-oriented.
+  - Guaranteed in-order packet arrival.
+  - Automatic congestion control and retransmissions.
+  - *Best for*: Financial transactions, REST APIs, HTML documents, file transfers.
+
+- **UDP (User Datagram Protocol)**:
+  - Connectionless datagrams.
+  - No handshakes; packets are sent into the network without confirmation.
+  - Packets may arrive out of order, get duplicated, or drop completely.
+  - *Best for*: Live video streaming, online multiplayer games, DNS queries, VoIP.
+
+---
+
+## 4. Knowledge Check
+
+<KnowledgeCheck
+  client:visible
+  question="Why does HTTP/1.1 utilize the 'Connection: keep-alive' header in production web applications?"
+  options={[
+    "To avoid the repeated latency cost of TCP 3-way handshakes and TLS negotiations for subsequent requests to the same server.",
+    "To permanently store user passwords inside the server's kernel cache.",
+    "To compress PNG and JPEG images automatically before sending.",
+    "To switch the network protocol from TCP to UDP mid-stream."
+  ]}
+  correctIndex={0}
+  explanation="Establishing a new TCP connection and TLS handshake requires multiple round trips between client and server. Reusing an existing socket with 'keep-alive' eliminates this handshake latency for subsequent requests."
+/>

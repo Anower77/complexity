@@ -1,0 +1,33 @@
+---
+import { getAllCourses } from '@/lib/content/course-loader';
+import { getAllChapters } from '@/lib/content/chapter-loader';
+import { getLessonsByChapterId } from '@/lib/content/lesson-loader';
+import { formatPath } from '@/lib/utilities/url';
+
+export async function getStaticPaths() {
+  const courses = getAllCourses();
+  const chapters = getAllChapters();
+
+  return chapters.map((chapter) => ({
+    params: {
+      courseSlug: chapter.courseId,
+      chapterSlug: chapter.slug
+    }
+  }));
+}
+
+const { courseSlug, chapterSlug } = Astro.params;
+const chapters = getAllChapters();
+const currentChapter = chapters.find((ch) => ch.courseId === courseSlug && ch.slug === chapterSlug);
+
+if (!currentChapter) {
+  return Astro.redirect(formatPath('/404'));
+}
+
+const lessons = getLessonsByChapterId(currentChapter.id);
+const targetUrl = lessons.length > 0
+  ? formatPath(`/courses/${courseSlug}/${chapterSlug}/${lessons[0].slug}`)
+  : formatPath(`/courses/${courseSlug}`);
+
+return Astro.redirect(targetUrl);
+---

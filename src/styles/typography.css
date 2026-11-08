@@ -1,0 +1,100 @@
+/* Editorial Typography & Reading Styles */
+
+.font-editorial {
+  font-family: 'Newsreader', Georgia, Cambria, serif;
+  font-feature-settings: 'cv01', 'cv02';
+}
+
+.font-technical {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.011em;
+}
+
+.font-code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Prose overrides for maximum legibility */
+.prose-complexity {
+  color: var(--text-primary);
+  max-width: 72ch;
+  line-height: 1.75;
+}
+
+.prose-complexity h1,
+.prose-complexity h2,
+.prose-complexity h3,
+.prose-complexity h4 {
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.prose-complexity h1 {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 2.25rem;
+  line-height: 1.2;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose-complexity h2 {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.75rem;
+  line-height: 1.3;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.prose-complexity h3 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-complexity p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.prose-complexity strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.prose-complexity a {
+  color: var(--brand-primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.15s ease;
+}
+
+.prose-complexity a:hover {
+  color: var(--brand-hover);
+}
+
+.prose-complexity ul,
+.prose-complexity ol {
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.prose-complexity li {
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.prose-complexity blockquote {
+  border-left: 3px solid var(--border-strong);
+  padding-left: 1.25rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}

@@ -1,0 +1,32 @@
+---
+interface Props {
+  variant?: 'default' | 'brand' | 'success' | 'warning' | 'danger';
+  size?: 'sm' | 'md';
+  class?: string;
+}
+
+const {
+  variant = 'default',
+  size = 'md',
+  class: className = ''
+} = Astro.props;
+
+const baseStyles = 'inline-flex items-center font-mono font-medium rounded-full';
+
+const variantStyles = {
+  default: 'bg-surface-elevated text-text-secondary border border-border-subtle',
+  brand: 'bg-brand-subtle text-brand border border-brand-border',
+  success: 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20',
+  warning: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20',
+  danger: 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20'
+};
+
+const sizeStyles = {
+  sm: 'px-2 py-0.5 text-[11px]',
+  md: 'px-2.5 py-0.5 text-xs'
+};
+---
+
+<span class={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}>
+  <slot />
+</span>
