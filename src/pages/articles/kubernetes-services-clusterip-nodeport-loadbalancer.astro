@@ -1,0 +1,444 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import TableOfContents from '@/components/navigation/TableOfContents';
+import ServiceIntroDiagram from '@/components/kubernetes/ServiceIntroDiagram';
+import ServiceArchitectureDiagram from '@/components/kubernetes/ServiceArchitectureDiagram';
+import TrafficSimulator from '@/components/kubernetes/TrafficSimulator';
+import KubernetesServiceComparison from '@/components/kubernetes/KubernetesServiceComparison';
+import CodeBlockWithCopy from '@/components/kubernetes/CodeBlockWithCopy';
+import Badge from '@/components/ui/Badge.astro';
+import { formatPath } from '@/lib/utilities/url';
+import {
+  Clock,
+  ExternalLink,
+  BookOpen,
+  ArrowRight,
+  ShieldCheck,
+  Server,
+  Globe,
+  Terminal,
+  Cpu,
+  Layers,
+  AlertTriangle,
+  CheckCircle2,
+  Sparkles
+} from 'lucide-react';
+
+const breadcrumbs = [
+  { label: 'Articles & Guides', href: formatPath('/articles') },
+  { label: 'Kubernetes Services Explained' }
+];
+
+const headings = [
+  { id: 'why-services-exist', text: 'Why Kubernetes Services Exist', depth: 2, slug: 'why-services-exist' },
+  { id: 'understanding-service-types', text: 'Three Core Service Types', depth: 2, slug: 'understanding-service-types' },
+  { id: 'clusterip-internal-networking', text: 'Deep Dive: ClusterIP', depth: 2, slug: 'clusterip-internal-networking' },
+  { id: 'nodeport-host-ports', text: 'Deep Dive: NodePort', depth: 2, slug: 'nodeport-host-ports' },
+  { id: 'loadbalancer-cloud-integration', text: 'Deep Dive: LoadBalancer', depth: 2, slug: 'loadbalancer-cloud-integration' },
+  { id: 'feature-comparison', text: 'Architectural Comparison Matrix', depth: 2, slug: 'feature-comparison' },
+  { id: 'interactive-architecture-explorer', text: 'Interactive Architecture Explorer', depth: 2, slug: 'interactive-architecture-explorer' },
+  { id: 'traffic-distribution-simulation', text: 'Traffic Distribution Simulator', depth: 2, slug: 'traffic-distribution-simulation' },
+  { id: 'yaml-manifest-specifications', text: 'Production YAML Specifications', depth: 2, slug: 'yaml-manifest-specifications' },
+  { id: 'kubectl-inspection-commands', text: 'Practical Inspection Commands', depth: 2, slug: 'kubectl-inspection-commands' },
+  { id: 'troubleshooting-misconceptions', text: 'Common Misconceptions & Failure Scenarios', depth: 2, slug: 'troubleshooting-misconceptions' },
+  { id: 'prerequisites-and-next-steps', text: 'Knowledge Graph & Canonical References', depth: 2, slug: 'prerequisites-and-next-steps' }
+];
+
+const clusterIPYaml = `apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+  namespace: production
+  labels:
+    app.kubernetes.io/name: order-service
+spec:
+  type: ClusterIP
+  selector:
+    app: order-api
+  ports:
+    - name: http
+      port: 80           # The port exposed inside the cluster on the Service VIP
+      targetPort: 8080   # The actual container port where your app process listens
+      protocol: TCP`;
+
+const nodePortYaml = `apiVersion: v1
+kind: Service
+metadata:
+  name: web-frontend-nodeport
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: web-frontend
+  ports:
+    - name: http
+      port: 80           # Service ClusterIP port
+      targetPort: 8080   # Pod container listener port
+      nodePort: 30080    # Static port opened on every cluster worker node (30000-32767)
+      protocol: TCP`;
+
+const loadBalancerYaml = `apiVersion: v1
+kind: Service
+metadata:
+  name: public-api-gateway
+  namespace: production
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
+spec:
+  type: LoadBalancer
+  selector:
+    app: gateway
+  ports:
+    - name: http
+      port: 80           # Port exposed on the external Cloud Load Balancer
+      targetPort: 8080   # Pod container listening port
+      protocol: TCP`;
+---
+
+<BaseLayout
+  title="Kubernetes Services Explained: ClusterIP vs NodePort vs LoadBalancer — Complexity"
+  description="Three ways to expose your Kubernetes Pods. Understand how traffic reaches your applications, where each Service type is used, and how Kubernetes routes requests."
+>
+  <div class="max-w-layout mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="flex-1 flex max-w-layout mx-auto w-full gap-8">
+      <!-- Center Primary Reading Column -->
+      <main class="flex-1 min-w-0 max-w-content mx-auto py-2">
+        <!-- Editorial Article Header -->
+        <header class="mb-10 pb-8 border-b border-border-subtle">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="font-mono text-xs font-bold text-brand px-2 py-0.5 rounded bg-brand-subtle border border-brand/20">
+              MODULE 02.04
+            </span>
+            <span class="font-mono text-xs text-text-muted">
+              • Linux & Container Networking
+            </span>
+            <Badge variant="warning" size="sm">
+              INTERMEDIATE
+            </Badge>
+          </div>
+
+          <h1 class="font-editorial text-3xl sm:text-5xl font-bold tracking-tight text-text-primary mb-4 leading-tight">
+            Kubernetes Services Explained: ClusterIP vs NodePort vs LoadBalancer
+          </h1>
+
+          <p class="text-base sm:text-xl text-text-secondary leading-relaxed font-technical mb-6">
+            Three fundamental ways to expose your application Pods. Understand how network packets traverse physical interfaces, where virtual IPs originate, and how the Linux kernel routes client requests across distributed nodes.
+          </p>
+
+          <div class="flex items-center flex-wrap gap-4 text-xs font-mono text-text-muted pt-4 border-t border-border-subtle">
+            <div class="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-brand" />
+              <span>14 min read</span>
+            </div>
+            <span>•</span>
+            <div class="flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Interactive Simulators Embedded</span>
+            </div>
+            <span>•</span>
+            <div>
+              <span>First-Principles Verified</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Article Prose Content -->
+        <article class="prose-complexity">
+          <!-- Section 1 -->
+          <h2 id="why-services-exist">1. Why do Kubernetes Services exist?</h2>
+
+          <p>
+            In containerized architectures, application instances do not run on permanent, static hardware. In Kubernetes, <strong>Pods are ephemeral mortal objects</strong>. When a worker node experiences kernel panics, runs out of memory (OOM), or undergoes rolling updates, the Kubernetes control plane destroys old Pods and schedules replacement Pods onto healthy nodes.
+          </p>
+
+          <p>
+            Every newly scheduled Pod receives its own distinct IP address allocated dynamically by the cluster's Container Network Interface (CNI) plugin (such as Calico, Cilium, or AWS-VPC-CNI). If an upstream client or microservice attempts to communicate directly with a specific Pod IP, that connection breaks the instant the Pod is rescheduled or scaled horizontally.
+          </p>
+
+          <blockquote>
+            <p>
+              <strong>The Core Problem:</strong> If your frontend needs to query three backend replicas at <code>10.244.1.14</code>, <code>10.244.2.29</code>, and <code>10.244.3.42</code>, who updates the frontend when Pod 2 crashes and restarts with IP <code>10.244.2.88</code>? Hardcoding Pod IPs guarantees downtime.
+            </p>
+          </blockquote>
+
+          <p>
+            This is precisely why the <strong>Kubernetes Service</strong> abstraction exists. A Service is not a running software process or daemon; rather, it is a persistent API resource that defines a <em>stable Virtual IP (VIP) and DNS name</em> associated with a dynamic pool of Pod endpoints selected by key-value labels.
+          </p>
+
+          <!-- Interactive Intro Diagram -->
+          <ServiceIntroDiagram client:load />
+
+          <p>
+            As shown in the simulation above, the client communicates strictly with the persistent Service VIP (e.g. <code>10.96.0.10:80</code>). Even if backend Pods are terminated, scaled from 3 to 50 replicas, or assigned completely new IP addresses, the Service VIP and internal DNS record remain 100% immutable.
+          </p>
+
+          <!-- Section 2 -->
+          <h2 id="understanding-service-types">2. Understanding Kubernetes Service Types</h2>
+
+          <p>
+            Kubernetes provides three primary Service types that differ fundamentally in <strong>how and from where traffic is permitted to reach the backend Pods</strong>:
+          </p>
+
+          <ol>
+            <li>
+              <strong>ClusterIP:</strong> The default Service type. Allocates an internal, cluster-only virtual IP. Unreachable directly by external internet clients.
+            </li>
+            <li>
+              <strong>NodePort:</strong> Exposes the Service on each cluster worker node's physical/VM IP address at a static dedicated high-range port (by default <code>30000–32767</code>).
+            </li>
+            <li>
+              <strong>LoadBalancer:</strong> Integrates with underlying cloud infrastructure (AWS NLB, Google Cloud Network Load Balancer, Azure Load Balancer, or bare-metal MetalLB) to provision an external public-facing load balancer with a single stable internet IP.
+            </li>
+          </ol>
+
+          <!-- Section 3 -->
+          <h2 id="clusterip-internal-networking">3. Deep Dive: ClusterIP</h2>
+
+          <p>
+            When you create a Service without explicitly declaring a <code>spec.type</code>, Kubernetes defaults to <strong>ClusterIP</strong>. The control plane assigns a virtual IP address chosen from the cluster's pre-configured Service CIDR range (typically <code>10.96.0.0/12</code>).
+          </p>
+
+          <p>
+            Crucially, <strong>a ClusterIP is not attached to any physical network interface card (NIC)</strong>. You will not find <code>10.96.0.10</code> configured on <code>eth0</code> of any worker node. Instead, the Linux kernel on every node is programmed via <code>kube-proxy</code> using netfilter/iptables rules, IPVS hash tables, or eBPF socket maps. When a packet destined for the VIP is detected, the kernel performs <strong>Destination Network Address Translation (DNAT)</strong> in-flight, transparently swapping the Service VIP for an active Pod Endpoint IP.
+          </p>
+
+          <h3>Typical ClusterIP Use Cases</h3>
+          <ul>
+            <li><strong>Internal Databases & Caches:</strong> PostgreSQL, Redis, and Elasticsearch clusters that must never be directly exposed to the public internet.</li>
+            <li><strong>Backend Microservices:</strong> Private gRPC or REST microservices consumed exclusively by internal API gateways or upstream frontend pods.</li>
+            <li><strong>Background Worker Queues:</strong> RabbitMQ or Celery task consumers processing internal events.</li>
+          </ul>
+
+          <!-- Section 4 -->
+          <h2 id="nodeport-host-ports">4. Deep Dive: NodePort</h2>
+
+          <p>
+            <strong>NodePort</strong> builds directly on top of ClusterIP. When you create a NodePort Service, Kubernetes allocates a ClusterIP as usual, but additionally allocates a dedicated port across the entire cluster in the range <code>30000–32767</code>.
+          </p>
+
+          <p>
+            Every single worker node in your cluster configures its local network stack to listen on that exact port (e.g. <code>30080</code>). External clients can then send traffic to <code>http://&lt;ANY_NODE_IP&gt;:30080</code>.
+          </p>
+
+          <blockquote>
+            <p>
+              <strong>Critical Architectural Invariant:</strong> A request arriving at <em>Node 1</em> does <strong>not</strong> have to be handled by a Pod running on Node 1! The local <code>kube-proxy</code> on Node 1 can DNAT and route the packet across the cluster overlay network to a Pod running on Node 2 or Node 3.
+            </p>
+          </blockquote>
+
+          <h3>Trade-offs & Operational Limitations of NodePort</h3>
+          <ul>
+            <li><strong>Non-standard HTTP ports:</strong> Production users expect traffic on standard ports <code>80</code> and <code>443</code>, not high ports like <code>30080</code>.</li>
+            <li><strong>No built-in health-aware public DNS:</strong> If a client sends traffic to Node 1's IP and Node 1 suffers hardware failure, client connections fail unless an external upstream load balancer removes Node 1 from DNS.</li>
+            <li><strong>Firewall exposure:</strong> Requires opening broad port ranges across all worker nodes in cloud security groups.</li>
+          </ul>
+
+          <!-- Section 5 -->
+          <h2 id="loadbalancer-cloud-integration">5. Deep Dive: LoadBalancer</h2>
+
+          <p>
+            The <strong>LoadBalancer</strong> Service type is the standard approach for exposing public-facing applications in cloud environments. It requests an external load balancer from your cloud provider (such as an AWS Network Load Balancer, Google Cloud Passthrough NLB, or Azure Standard Load Balancer).
+          </p>
+
+          <p>
+            Once provisioned, the cloud provider assigns a public static IP or canonical DNS hostname (e.g. <code>a7c8...us-east-1.elb.amazonaws.com</code>). Traffic from the public internet enters the cloud load balancer, which distributes connections across healthy cluster nodes.
+          </p>
+
+          <h3>Implementation Datapaths: NodePort Indirection vs Direct Pod Routing</h3>
+          <p>
+            Depending on your CNI and cloud provider integration, traffic flows in one of two ways:
+          </p>
+          <ul>
+            <li>
+              <strong>Traditional NodePort Routing:</strong> The cloud load balancer forwards packets to worker nodes on an allocated NodePort. The receiving node then forwards the packet to the target Pod (potentially incurring a second network hop across nodes).
+            </li>
+            <li>
+              <strong>Direct Pod Target Groups (e.g. AWS VPC CNI or GKE Network Endpoint Groups):</strong> The cloud load balancer is programmed with Pod IPs directly, bypassing NodePorts and node-to-node hops entirely for sub-millisecond latency.
+            </li>
+          </ul>
+
+          <!-- Section 6: Feature Comparison Matrix -->
+          <h2 id="feature-comparison">6. Architectural Comparison Matrix</h2>
+          <p>
+            Compare the operational, networking, and security characteristics of the three Service types:
+          </p>
+
+          <KubernetesServiceComparison client:visible />
+
+          <!-- Section 7: Interactive Architecture Explorer -->
+          <h2 id="interactive-architecture-explorer">7. Interactive Architecture Explorer</h2>
+          <p>
+            Switch between the three architecture modes below to observe how the network boundaries, traffic datapaths, and component roles transform. Click on any component to inspect its kernel packet filtering rules and socket configurations:
+          </p>
+
+          <ServiceArchitectureDiagram client:visible />
+
+          <!-- Section 8: Traffic Distribution Simulator -->
+          <h2 id="traffic-distribution-simulation">8. Traffic Distribution Simulator</h2>
+          <p>
+            Use the simulator below to inspect how incoming client requests are dispatched across multiple active backend Pod endpoints:
+          </p>
+
+          <TrafficSimulator client:visible />
+
+          <!-- Section 9: YAML Manifests -->
+          <h2 id="yaml-manifest-specifications">9. Production YAML Manifest Specifications</h2>
+          <p>
+            Examine production-ready, syntactically verified Kubernetes Service manifests for each of the three types:
+          </p>
+
+          <h3>A. ClusterIP Service Manifest</h3>
+          <p>
+            Notice that <code>spec.type</code> is set to <code>ClusterIP</code>. The <code>port: 80</code> defines the internal virtual IP listener, while <code>targetPort: 8080</code> directs traffic to the container application listener.
+          </p>
+          <CodeBlockWithCopy client:load code={clusterIPYaml} language="yaml" filename="clusterip-service.yaml" />
+
+          <h3>B. NodePort Service Manifest</h3>
+          <p>
+            Here, <code>spec.type</code> is <code>NodePort</code>. Specifying <code>nodePort: 30080</code> is optional; if omitted, Kubernetes will automatically assign an available port between <code>30000</code> and <code>32767</code>.
+          </p>
+          <CodeBlockWithCopy client:load code={nodePortYaml} language="yaml" filename="nodeport-service.yaml" />
+
+          <h3>C. LoadBalancer Service Manifest</h3>
+          <p>
+            The <code>spec.type</code> is <code>LoadBalancer</code>. In cloud environments like AWS EKS, annotations instruct the AWS Load Balancer Controller to provision an external Network Load Balancer (NLB).
+          </p>
+          <CodeBlockWithCopy client:load code={loadBalancerYaml} language="yaml" filename="loadbalancer-service.yaml" />
+
+          <!-- Section 10: kubectl Inspection -->
+          <h2 id="kubectl-inspection-commands">10. Practical Inspection Commands</h2>
+          <p>
+            When diagnosing Kubernetes networking in production, use these canonical <code>kubectl</code> commands:
+          </p>
+
+          <div class="space-y-4 my-6">
+            <div class="p-4 rounded-lg bg-surface border border-border-subtle space-y-1.5">
+              <div class="font-mono text-xs font-bold text-brand">kubectl get services (or kubectl get svc)</div>
+              <p class="text-xs text-text-secondary font-technical">
+                Lists all Services in the current namespace, showing their Type, ClusterIP, External IP, and mapped Ports.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-surface border border-border-subtle space-y-1.5">
+              <div class="font-mono text-xs font-bold text-brand">kubectl describe service &lt;service-name&gt;</div>
+              <p class="text-xs text-text-secondary font-technical">
+                Examines selector labels, active Endpoints, NodePort allocations, and events (e.g. cloud load balancer provisioning errors).
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-surface border border-border-subtle space-y-1.5">
+              <div class="font-mono text-xs font-bold text-brand">kubectl get endpointslices</div>
+              <p class="text-xs text-text-secondary font-technical">
+                <strong>Modern Kubernetes Endpoint API:</strong> EndpointSlices replace the older monolithic <code>Endpoints</code> resource to scale past 1,000 Pods per Service without bottlenecking the etcd control plane.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-surface border border-border-subtle space-y-1.5">
+              <div class="font-mono text-xs font-bold text-brand">kubectl get pods -o wide</div>
+              <p class="text-xs text-text-secondary font-technical">
+                Displays the internal Pod IPs and the specific worker node each Pod is currently scheduled upon.
+              </p>
+            </div>
+          </div>
+
+          <!-- Section 11: Common Misconceptions -->
+          <h2 id="troubleshooting-misconceptions">11. Common Misconceptions & Failure Scenarios</h2>
+
+          <div class="space-y-6 my-6">
+            <div class="p-5 rounded-lg border border-border-subtle bg-surface space-y-2">
+              <div class="flex items-center gap-2 font-mono text-xs font-bold text-rose-500 uppercase">
+                <AlertTriangle className="w-4 h-4" /> Misconception 1: "ClusterIP can be pinged from outside the cluster"
+              </div>
+              <p class="text-xs text-text-secondary font-technical leading-relaxed">
+                <strong>Reality:</strong> A ClusterIP is a purely virtual IP managed via iptables/IPVS in the kernel of cluster nodes. It does not exist on external physical routers and does not respond to ICMP ping packets by default.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-lg border border-border-subtle bg-surface space-y-2">
+              <div class="flex items-center gap-2 font-mono text-xs font-bold text-rose-500 uppercase">
+                <AlertTriangle className="w-4 h-4" /> Misconception 2: "Service selector matches Deployment name"
+              </div>
+              <p class="text-xs text-text-secondary font-technical leading-relaxed">
+                <strong>Reality:</strong> The Service <code>spec.selector</code> does NOT look at the Deployment resource name. It strictly matches the <code>labels</code> placed inside the <code>spec.template.metadata.labels</code> of the Pod specification. If labels do not match exactly, <code>Endpoints: &lt;none&gt;</code> will occur.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-lg border border-border-subtle bg-surface space-y-2">
+              <div class="flex items-center gap-2 font-mono text-xs font-bold text-rose-500 uppercase">
+                <AlertTriangle className="w-4 h-4" /> Misconception 3: "LoadBalancer works out-of-the-box on Bare Metal"
+              </div>
+              <p class="text-xs text-text-secondary font-technical leading-relaxed">
+                <strong>Reality:</strong> In on-premise or local bare-metal clusters (e.g. kubeadm), a Service of type <code>LoadBalancer</code> will remain indefinitely in <code>&lt;pending&gt;</code> state unless an in-cluster load-balancer controller like <strong>MetalLB</strong> or <strong>Kube-VIP</strong> is installed.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-lg border border-border-subtle bg-surface space-y-2">
+              <div class="flex items-center gap-2 font-mono text-xs font-bold text-rose-500 uppercase">
+                <AlertTriangle className="w-4 h-4" /> Misconception 4: "Ingress is a 4th Kubernetes Service type"
+              </div>
+              <p class="text-xs text-text-secondary font-technical leading-relaxed">
+                <strong>Reality:</strong> Ingress and Gateway API are NOT Service types. An Ingress is a separate Layer-7 reverse proxy (typically Nginx, Envoy, or Traefik) that routes HTTP hostnames and paths down to internal ClusterIP Services.
+              </p>
+            </div>
+          </div>
+
+          <!-- Section 14: Knowledge Graph Connections & References -->
+          <h2 id="prerequisites-and-next-steps">12. Knowledge Graph Connections & Canonical References</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+            <div class="p-4 rounded-lg bg-surface border border-border-subtle space-y-2">
+              <span class="font-mono text-[10px] text-text-muted uppercase font-bold">Prerequisite Concepts</span>
+              <ul class="text-xs text-text-secondary space-y-1 font-technical">
+                <li><a href={formatPath('/courses/system-architecture-fundamentals/client-server-architecture/introduction-to-client-server')} class="text-brand hover:underline">&rarr; Introduction to Client-Server Architecture</a></li>
+                <li><a href={formatPath('/courses/system-architecture-fundamentals/client-server-architecture/request-lifecycle-and-protocols')} class="text-brand hover:underline">&rarr; Request Lifecycle & Transport Protocols</a></li>
+                <li><a href={formatPath('/courses/system-architecture-fundamentals/network-fundamentals/dns-resolution-and-sockets')} class="text-brand hover:underline">&rarr; DNS Resolution & Socket Demarcation</a></li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-lg bg-surface border border-border-subtle space-y-2">
+              <span class="font-mono text-[10px] text-text-muted uppercase font-bold">Recommended Next Deep Dives</span>
+              <ul class="text-xs text-text-secondary space-y-1 font-technical">
+                <li class="text-text-muted">&bull; Kubernetes CoreDNS & Service Discovery Internals (Planned)</li>
+                <li class="text-text-muted">&bull; Ingress Controllers vs Gateway API (HTTPRoute) (Planned)</li>
+                <li class="text-text-muted">&bull; Kube-Proxy Datapaths: iptables vs IPVS vs Cilium eBPF (Planned)</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Official References</h3>
+          <ul class="text-xs text-brand space-y-1 font-mono">
+            <li>
+              <a href="https://kubernetes.io/docs/concepts/services-networking/service/" target="_blank" rel="noreferrer" class="hover:underline flex items-center gap-1.5">
+                <span>Kubernetes Documentation: Service Concept & Specifications</span>
+                <ExternalLink className="w-3 h-3 text-text-muted" />
+              </a>
+            </li>
+            <li>
+              <a href="https://kubernetes.io/docs/concepts/services-networking/ingress/" target="_blank" rel="noreferrer" class="hover:underline flex items-center gap-1.5">
+                <span>Kubernetes Documentation: Ingress Layer-7 Routing</span>
+                <ExternalLink className="w-3 h-3 text-text-muted" />
+              </a>
+            </li>
+            <li>
+              <a href="https://gateway-api.sigs.k8s.io/" target="_blank" rel="noreferrer" class="hover:underline flex items-center gap-1.5">
+                <span>Kubernetes Gateway API: Next-Generation Service Routing</span>
+                <ExternalLink className="w-3 h-3 text-text-muted" />
+              </a>
+            </li>
+          </ul>
+        </article>
+      </main>
+
+      <!-- Right Sidebar: On-Page Table of Contents -->
+      <aside class="hidden xl:block w-sidebar-right flex-shrink-0">
+        <div class="sticky top-20">
+          <TableOfContents client:load items={headings} />
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

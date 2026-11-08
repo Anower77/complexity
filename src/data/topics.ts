@@ -185,10 +185,27 @@ export const TOPICS: TopicNode[] = [
     categoryLabel: 'Linux & OS Runtime',
     difficulty: 'Intermediate',
     prerequisites: ['linux-epoll'],
-    relatedTopics: ['reverse-proxy'],
-    nextTopics: ['reverse-proxy'],
+    relatedTopics: ['reverse-proxy', 'kubernetes-services'],
+    nextTopics: ['kubernetes-services', 'reverse-proxy'],
     status: 'planned',
     x: 640,
+    y: 80
+  },
+  {
+    id: 'kubernetes-services',
+    slug: 'kubernetes-services',
+    title: 'Kubernetes Services Explained',
+    shortDescription: 'Exposing Pods via ClusterIP, NodePort, and LoadBalancer abstractions.',
+    detailedDescription: 'Understand how traffic reaches containerized applications, where each Service type is used, and how the Linux kernel routes requests across dynamic ephemeral Pods.',
+    category: 'runtime',
+    categoryLabel: 'Linux & OS Runtime',
+    difficulty: 'Intermediate',
+    prerequisites: ['container-runtimes', 'client-server'],
+    relatedTopics: ['reverse-proxy', 'http-protocols'],
+    nextTopics: ['reverse-proxy'],
+    articleUrl: '/articles/kubernetes-services-clusterip-nodeport-loadbalancer',
+    status: 'published',
+    x: 820,
     y: 80
   },
   {
@@ -375,6 +392,15 @@ export const TOPIC_EDGES: TopicEdge[] = [
     label: 'Related To',
     description: 'Both epoll and containers rely on low-level Linux kernel subsystem isolation.',
     order: 6
+  },
+  {
+    id: 'edge-containers-k8s',
+    source: 'container-runtimes',
+    target: 'kubernetes-services',
+    relationshipType: 'builds-on',
+    label: 'Builds On',
+    description: 'Kubernetes Services orchestrate network packet routing across containerized Pods.',
+    order: 7
   },
   {
     id: 'edge-http-proxy',
