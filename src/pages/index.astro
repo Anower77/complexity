@@ -1,109 +1,115 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import SystemFlowSimulator from '@/components/visualization/SystemFlowSimulator';
+import CurriculumFlowGraph from '@/components/visualization/CurriculumFlowGraph';
+import WorkflowDiagram from '@/components/visualization/WorkflowDiagram';
 import CourseCard from '@/components/course/CourseCard.astro';
 import Button from '@/components/ui/Button.astro';
 import Badge from '@/components/ui/Badge.astro';
 import { getAllCourses } from '@/lib/content/course-loader';
 import { getAllLessons } from '@/lib/content/lesson-loader';
 import { formatPath } from '@/lib/utilities/url';
-import { ArrowRight, BookOpen, Layers, Terminal, ShieldAlert, Cpu } from 'lucide-react';
+import { ArrowRight, BookOpen, Layers, Terminal, ShieldAlert, Cpu, Network, CheckCircle2 } from 'lucide-react';
 
 const courses = getAllCourses();
 const allLessons = getAllLessons();
-const sampleCourse = courses[0];
 ---
 
 <BaseLayout
-  title="Complexity — Interactive Engineering Education"
-  description="Understand how systems work, why they break, and how engineers design them to scale."
+  title="Complexity — Interactive System Architecture & Engineering Platform"
+  description="Deconstruct backend infrastructure, network lifecycles, and distributed architecture through interactive flow diagrams and first-principles lessons."
 >
-  <!-- Hero Section -->
-  <section class="border-b border-border-subtle bg-surface/50 py-16 sm:py-24 px-4 sm:px-6">
+  <!-- Hero Section with Interactive System Flow Simulator -->
+  <section class="border-b border-border-subtle bg-surface/40 pt-16 pb-20 px-4 sm:px-6 relative overflow-hidden">
     <div class="max-w-layout mx-auto">
-      <div class="max-w-3xl">
+      <div class="max-w-3xl mb-12">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-subtle border border-brand-border text-brand text-xs font-mono mb-6">
-          <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-          <span>INTERACTIVE ENGINEERING PLATFORM</span>
+          <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span>
+          <span>SYSTEM ARCHITECTURE & DISTRIBUTED SYSTEMS</span>
         </div>
 
-        <h1 class="font-editorial text-4xl sm:text-6xl font-bold tracking-tight text-text-primary leading-[1.1] mb-6">
+        <h1 class="font-editorial text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-text-primary leading-[1.08] mb-6">
           Understand how systems work, <span class="italic text-brand">why they break</span>, and how to scale them.
         </h1>
 
-        <p class="font-technical text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl">
-          Complexity is a course-oriented technical learning platform. We deconstruct backend infrastructure, network lifecycles, and distributed architecture through interactive diagrams and first-principles lessons.
+        <p class="font-technical text-lg sm:text-xl text-text-secondary leading-relaxed mb-8 max-w-2xl">
+          Complexity is an interactive engineering education platform. We replace hand-wavy summaries with observable architecture flow diagrams, socket-level simulations, and battle-tested failure scenarios.
         </p>
 
         <div class="flex items-center flex-wrap gap-4">
           <Button href={formatPath('/courses')} variant="primary" size="lg">
-            <span>Browse Courses</span>
+            <span>Explore Courses</span>
             <ArrowRight class="w-4 h-4" />
           </Button>
 
           <Button href={formatPath('/learn')} variant="secondary" size="lg">
-            <span>View Learning Paths</span>
+            <span>Interactive Learning Path</span>
           </Button>
         </div>
+      </div>
+
+      <!-- Live Interactive Architecture Flow Diagram in Hero -->
+      <div class="mt-6">
+        <SystemFlowSimulator client:load />
       </div>
     </div>
   </section>
 
-  <!-- Platform Pillars -->
-  <section class="border-b border-border-subtle py-12 px-4 sm:px-6 bg-surface">
-    <div class="max-w-layout mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="p-5 rounded-lg border border-border-subtle bg-surface-elevated/50">
-        <div class="w-8 h-8 rounded-md bg-brand-subtle text-brand flex items-center justify-center mb-3">
-          <Layers class="w-4 h-4" />
+  <!-- Interactive Curriculum Flow & Learning Dependency Section -->
+  <section class="border-b border-border-subtle py-16 sm:py-24 px-4 sm:px-6 bg-surface">
+    <div class="max-w-layout mx-auto">
+      <div class="max-w-3xl mb-12">
+        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
+          PROGRESSIVE CURRICULUM
         </div>
-        <h3 class="font-technical text-sm font-bold text-text-primary mb-1">
-          Structured Course Curriculum
-        </h3>
-        <p class="text-xs text-text-secondary leading-relaxed">
-          Step-by-step chapters designed around clear learning objectives, prerequisites, and persistent progress tracking.
+        <h2 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary mb-4">
+          Structured Learning Journey
+        </h2>
+        <p class="font-technical text-base text-text-secondary leading-relaxed">
+          Systems engineering cannot be learned through disconnected blog posts. Every phase builds upon the physical invariants and operating system primitives mastered in the previous phase.
         </p>
       </div>
 
-      <div class="p-5 rounded-lg border border-border-subtle bg-surface-elevated/50">
-        <div class="w-8 h-8 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3">
-          <Cpu class="w-4 h-4" />
+      <!-- Interactive Curriculum Dependency Flow Graph -->
+      <CurriculumFlowGraph client:visible />
+    </div>
+  </section>
+
+  <!-- Dynamic Request Workflow Simulation Showcase -->
+  <section class="border-b border-border-subtle py-16 sm:py-24 px-4 sm:px-6 bg-surface/50">
+    <div class="max-w-layout mx-auto">
+      <div class="max-w-3xl mb-10">
+        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
+          PACKET LIFECYCLE
         </div>
-        <h3 class="font-technical text-sm font-bold text-text-primary mb-1">
-          Interactive Architecture Diagrams
-        </h3>
-        <p class="text-xs text-text-secondary leading-relaxed">
-          Inspect internal node buffers, connection protocols, and active socket allocations directly on vector diagrams.
+        <h2 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary mb-4">
+          How a Request Moves Across the Wire
+        </h2>
+        <p class="font-technical text-base text-text-secondary leading-relaxed">
+          Step through an HTTP request lifecycle from DNS query and TCP/TLS handshakes to kernel socket buffer allocation, reverse proxying, and cache-aside storage.
         </p>
       </div>
 
-      <div class="p-5 rounded-lg border border-border-subtle bg-surface-elevated/50">
-        <div class="w-8 h-8 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center mb-3">
-          <ShieldAlert class="w-4 h-4" />
-        </div>
-        <h3 class="font-technical text-sm font-bold text-text-primary mb-1">
-          Production Failure Scenarios
-        </h3>
-        <p class="text-xs text-text-secondary leading-relaxed">
-          Learn how systems degrade during traffic surges, packet drops, socket exhaustion, and network partitions.
-        </p>
-      </div>
+      <!-- Interactive Workflow Diagram -->
+      <WorkflowDiagram client:visible />
     </div>
   </section>
 
   <!-- Featured Courses -->
-  <section class="py-16 px-4 sm:px-6 max-w-layout mx-auto">
-    <div class="flex items-center justify-between mb-8">
+  <section class="py-16 sm:py-24 px-4 sm:px-6 max-w-layout mx-auto">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
       <div>
-        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-1">
-          CURRICULUM
+        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
+          COURSE CATALOG
         </div>
-        <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary">
-          Featured Engineering Courses
+        <h2 class="font-editorial text-3xl sm:text-4xl font-bold text-text-primary">
+          Available Engineering Courses
         </h2>
       </div>
 
       <a
         href={formatPath('/courses')}
-        class="inline-flex items-center gap-1.5 text-xs font-medium text-brand hover:underline font-technical"
+        class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand hover:underline font-technical"
       >
         <span>View all courses</span>
         <ArrowRight class="w-3.5 h-3.5" />
@@ -117,41 +123,39 @@ const sampleCourse = courses[0];
     </div>
   </section>
 
-  <!-- Recently Added Lessons -->
-  <section class="border-t border-border-subtle py-16 px-4 sm:px-6 bg-surface">
+  <!-- The Seven Fundamental Questions Manifesto -->
+  <section class="border-t border-border-subtle py-16 sm:py-20 px-4 sm:px-6 bg-surface">
     <div class="max-w-layout mx-auto">
-      <div class="mb-8">
-        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-1">
-          LATEST ADDITIONS
+      <div class="max-w-2xl mb-12">
+        <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
+          PEDAGOGICAL INVARIANT
         </div>
-        <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary">
-          Recently Added Lessons
+        <h2 class="font-editorial text-3xl sm:text-4xl font-bold text-text-primary mb-4">
+          The 7 Questions Behind Every System
         </h2>
+        <p class="font-technical text-sm text-text-secondary leading-relaxed">
+          Every article, simulation, and case study on Complexity deconstructs engineering choices against these immutable production constraints.
+        </p>
       </div>
 
-      <div class="divide-y divide-border-subtle border border-border-subtle rounded-lg bg-surface-elevated/30 overflow-hidden">
-        {allLessons.map((lesson) => (
-          <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-surface-elevated/70 transition-colors">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <Badge variant="default" size="sm">{lesson.difficulty.toUpperCase()}</Badge>
-                <span class="text-xs font-mono text-text-muted">{lesson.estimatedReadingTime} min read</span>
-              </div>
-              <h3 class="font-technical text-sm font-bold text-text-primary">
-                {lesson.title}
-              </h3>
-              <p class="text-xs text-text-secondary line-clamp-1 mt-0.5">
-                {lesson.description}
-              </p>
-            </div>
-
-            <a
-              href={formatPath(`/courses/${lesson.courseId}/client-server-architecture/${lesson.slug}`)}
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border-subtle bg-surface hover:border-brand text-xs font-medium text-text-primary hover:text-brand transition-colors whitespace-nowrap self-start sm:self-center"
-            >
-              <span>Read Lesson</span>
-              <ArrowRight class="w-3.5 h-3.5" />
-            </a>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { q: "01. Why does it exist?", d: "What historic wall or bottleneck led to its creation?" },
+          { q: "02. What problem does it solve?", d: "Exactly what pain point does it address?" },
+          { q: "03. How does it work internally?", d: "Data structures, sockets, and concurrency models." },
+          { q: "04. What happens under traffic?", d: "Connection pooling, queue depth, and thread pools." },
+          { q: "05. What happens when it fails?", d: "Cascading timeouts and network partitions." },
+          { q: "06. What alternatives exist?", d: "Trade-offs and architectural comparison matrices." },
+          { q: "07. Why choose it in production?", d: "Operational complexity and maintenance overhead." },
+          { q: "08. First-Principles Verified", d: "Zero fake benchmarks or fabricated statistics." }
+        ].map((item) => (
+          <div class="p-4 rounded-lg border border-border-subtle bg-surface-elevated/40">
+            <h3 class="font-technical text-xs font-bold text-text-primary mb-1">
+              {item.q}
+            </h3>
+            <p class="text-xs text-text-secondary leading-relaxed">
+              {item.d}
+            </p>
           </div>
         ))}
       </div>

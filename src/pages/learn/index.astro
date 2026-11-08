@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import CurriculumFlowGraph from '@/components/visualization/CurriculumFlowGraph';
 import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
 import Badge from '@/components/ui/Badge.astro';
 import { formatPath } from '@/lib/utilities/url';
@@ -59,32 +60,46 @@ const paths = [
       </p>
     </header>
 
+    <!-- Interactive Visual Learning Path Flow Graph -->
+    <div class="mb-16">
+      <CurriculumFlowGraph client:load />
+    </div>
+
+    <div class="mb-8">
+      <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-2">
+        Detailed Phase Breakdown
+      </h2>
+      <p class="text-xs text-text-muted font-technical">
+        Explore what each engineering phase teaches and how they connect.
+      </p>
+    </div>
+
     <div class="space-y-6">
       {paths.map((path, idx) => (
-        <div class="rounded-lg border border-border-subtle bg-surface p-6 sm:p-8 hover:border-border-strong transition-all">
+        <div class="rounded-lg border border-border-subtle bg-surface p-6 sm:p-8 hover:border-border-strong transition-all glow-card">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
             <div class="flex items-center gap-2">
-              <span class="font-mono text-xs font-bold px-2 py-0.5 rounded bg-surface-elevated border border-border-subtle text-text-muted">
-                STEP {idx + 1}
+              <span class="font-mono text-xs font-bold px-2 py-0.5 rounded bg-surface-elevated border border-border-subtle text-text-primary">
+                PHASE 0{idx + 1}
               </span>
               <Badge variant={path.difficulty === 'beginner' ? 'success' : 'warning'} size="sm">
                 {path.difficulty.toUpperCase()}
               </Badge>
             </div>
             {path.status === 'coming-soon' ? (
-              <span class="font-mono text-[11px] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 w-fit">
+              <span class="font-mono text-[11px] text-amber-500 bg-amber-500/10 px-2.5 py-0.5 rounded border border-amber-500/20 w-fit">
                 COMING SOON
               </span>
             ) : (
-              <span class="font-mono text-[11px] text-green-500 bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20 w-fit">
-                ACTIVE
+              <span class="font-mono text-[11px] text-green-500 bg-green-500/10 px-2.5 py-0.5 rounded border border-green-500/20 w-fit">
+                READY TO LEARN
               </span>
             )}
           </div>
 
-          <h2 class="font-editorial text-xl sm:text-2xl font-bold text-text-primary mb-2">
+          <h3 class="font-editorial text-xl sm:text-2xl font-bold text-text-primary mb-2">
             {path.title}
-          </h2>
+          </h3>
 
           <p class="text-sm text-text-secondary leading-relaxed mb-6 font-technical max-w-3xl">
             {path.description}
@@ -108,7 +123,7 @@ const paths = [
             <div class="pt-4 border-t border-border-subtle">
               <a
                 href={formatPath(`/courses/${path.slug}`)}
-                class="inline-flex items-center gap-2 text-xs font-medium text-brand hover:underline font-technical"
+                class="inline-flex items-center gap-2 text-xs font-semibold text-brand hover:underline font-technical"
               >
                 <span>Start Phase Course</span>
                 <ArrowRight class="w-3.5 h-3.5" />

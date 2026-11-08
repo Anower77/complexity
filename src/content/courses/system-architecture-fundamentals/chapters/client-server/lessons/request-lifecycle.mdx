@@ -26,18 +26,15 @@ references:
 
 import InfoCallout from '@/components/interactive/InfoCallout.astro';
 import KnowledgeCheck from '@/components/interactive/KnowledgeCheck';
+import WorkflowDiagram from '@/components/visualization/WorkflowDiagram';
 
 ## 1. Journey of a Network Packet
 
 When an engineering application sends an HTTP request, the abstraction hides multiple operating system and hardware layers.
 
-Every request traverses five distinct phases:
+Every request traverses distinct protocol phases. Use the interactive workflow diagram below to step through each layer:
 
-1. **DNS Resolution**: The host domain name is converted to an IP address.
-2. **TCP 3-Way Handshake**: A reliable transport stream is established (`SYN` → `SYN-ACK` → `ACK`).
-3. **TLS Encryption Handshake**: Symmetric session keys are negotiated for encrypted HTTPS.
-4. **Application Dispatch**: The web server reads bytes from the socket buffer and parses HTTP headers.
-5. **Connection Termination or Reuse**: Sockets are either closed (`FIN`/`ACK`) or preserved via `Connection: keep-alive`.
+<WorkflowDiagram client:visible />
 
 ```
 Client Stack                                               Server Stack
