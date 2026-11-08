@@ -1,5 +1,5 @@
 :root {
-  /* Light Theme — Refined Architectural Ivory & Deep Slate */
+  /* Light Theme — Refined Architectural Ink & Deep Slate (instruction v1.0.2) */
   --bg-canvas: #f8fafc;
   --bg-surface: #ffffff;
   --bg-surface-elevated: #f1f5f9;
@@ -7,51 +7,55 @@
 
   --border-subtle: #e2e8f0;
   --border-strong: #cbd5e1;
-  --border-active: #0284c7;
+  --border-active: #315e8a;
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+  --text-primary: #172033;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
 
-  --brand-primary: #0284c7;
-  --brand-subtle: #e0f2fe;
-  --brand-border: #bae6fd;
-  --brand-hover: #0369a1;
-  --brand-glow: rgba(2, 132, 199, 0.12);
+  --brand-primary: #315e8a;
+  --brand-subtle: #eaf1f8;
+  --brand-border: #cbdfe9;
+  --brand-hover: #264a6d;
+  --brand-glow: rgba(49, 94, 138, 0.12);
+
+  --accent-secondary: #397c78;
 
   --status-success: #10b981;
   --status-warning: #f59e0b;
   --status-danger: #ef4444;
-  --status-info: #0284c7;
+  --status-info: #315e8a;
   --status-purple: #8b5cf6;
 }
 
 .dark {
-  /* Dark Theme — Deep Obsidian, Obsidian-Zinc Surfaces & Crisp Cyber Accents */
-  --bg-canvas: #090a0f;
-  --bg-surface: #0e1117;
-  --bg-surface-elevated: #151922;
-  --bg-surface-muted: #1e2330;
+  /* Dark Theme — Restrained Engineering Obsidian-Navy (instruction v1.0.2) */
+  --bg-canvas: #10151d;
+  --bg-surface: #171f2b;
+  --bg-surface-elevated: #1e2938;
+  --bg-surface-muted: #273549;
 
-  --border-subtle: #1c2130;
-  --border-strong: #2a3248;
-  --border-active: #38bdf8;
+  --border-subtle: #2b394a;
+  --border-strong: #3b4e65;
+  --border-active: #83add6;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-primary: #e7edf5;
+  --text-secondary: #a3b0c2;
+  --text-muted: #728299;
 
-  --brand-primary: #38bdf8;
-  --brand-subtle: #082f49;
-  --brand-border: #0369a1;
-  --brand-hover: #7dd3fc;
-  --brand-glow: rgba(56, 189, 248, 0.18);
+  --brand-primary: #83add6;
+  --brand-subtle: #22364a;
+  --brand-border: #355373;
+  --brand-hover: #a1c4e8;
+  --brand-glow: rgba(131, 173, 214, 0.16);
 
-  --status-success: #10b981;
-  --status-warning: #f59e0b;
-  --status-danger: #ef4444;
-  --status-info: #38bdf8;
-  --status-purple: #a855f7;
+  --accent-secondary: #75b6a9;
+
+  --status-success: #34d399;
+  --status-warning: #fbbf24;
+  --status-danger: #f87171;
+  --status-info: #83add6;
+  --status-purple: #c084fc;
 }
 
 /* Ambient glow utility classes */
@@ -60,7 +64,7 @@
 }
 
 .glow-card {
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
 }
 
 .dark .glow-card {
@@ -74,6 +78,6 @@
 }
 
 .dark .bg-tech-grid {
-  background-image: radial-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(131, 173, 214, 0.08) 1px, transparent 1px);
   background-size: 20px 20px;
 }

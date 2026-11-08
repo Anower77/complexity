@@ -37,13 +37,13 @@ const firstLessonUrl = firstLesson
   : formatPath(`/courses/${course.slug}`);
 
 const breadcrumbs = [
-  { label: 'Courses', href: formatPath('/courses') },
+  { label: 'Structured Path', href: formatPath('/path') },
   { label: course.title }
 ];
 ---
 
 <BaseLayout
-  title={`${course.title} — Course Overview | Complexity`}
+  title={`${course.title} — Complexity`}
   description={course.description}
 >
   <div class="max-w-layout mx-auto px-4 sm:px-6 py-10">
@@ -55,7 +55,7 @@ const breadcrumbs = [
       lessonCount={totalLessons}
     />
 
-    <!-- Course Progress & Call to Action -->
+    <!-- Track Progress & Quick Jump -->
     <CourseProgress
       client:load
       courseSlug={course.slug}
@@ -64,10 +64,10 @@ const breadcrumbs = [
     />
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-      <!-- Left Column: Chapter & Lesson Outline -->
+      <!-- Left Column: Module & Article Outline -->
       <div class="lg:col-span-2 space-y-6">
         <h2 class="font-editorial text-2xl font-bold text-text-primary mb-4">
-          Curriculum Outline
+          Module & Article Index
         </h2>
 
         <div class="space-y-4">
@@ -76,7 +76,7 @@ const breadcrumbs = [
               <div class="p-4 sm:p-5 border-b border-border-subtle bg-surface-elevated/50 flex items-center justify-between">
                 <div>
                   <span class="font-mono text-[10px] text-text-muted uppercase tracking-wider block mb-0.5">
-                    CHAPTER {idx + 1}
+                    MODULE {idx + 1}
                   </span>
                   <h3 class="font-technical text-base font-bold text-text-primary">
                     {chapter.title}
@@ -86,7 +86,7 @@ const breadcrumbs = [
                   </p>
                 </div>
                 <span class="font-mono text-xs text-text-muted whitespace-nowrap pl-4">
-                  {chapter.lessons.length} {chapter.lessons.length === 1 ? 'lesson' : 'lessons'}
+                  {chapter.lessons.length} {chapter.lessons.length === 1 ? 'article' : 'articles'}
                 </span>
               </div>
 
@@ -129,7 +129,7 @@ const breadcrumbs = [
         <!-- Objectives Card -->
         <div class="rounded-lg border border-border-subtle bg-surface p-5">
           <h3 class="font-technical text-sm font-bold text-text-primary uppercase tracking-wider mb-3">
-            What You Will Learn
+            Core Architectural Focus
           </h3>
           <ul class="space-y-2 text-xs text-text-secondary">
             {course.learningObjectives.map((obj) => (

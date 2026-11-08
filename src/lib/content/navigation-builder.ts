@@ -16,25 +16,30 @@ export function buildCourseNavigation(
 
   const navChapters: NavChapterItem[] = chapters.map((ch) => {
     const lessons = getLessonsByChapterId(ch.id);
+    const navItems = lessons.map((l) => ({
+      id: l.id,
+      slug: l.slug,
+      title: l.title,
+      order: l.order,
+      url: formatPath(`/courses/${course.slug}/${ch.slug}/${l.slug}`),
+      isActive: l.slug === activeLessonSlug
+    }));
+
     return {
       id: ch.id,
       slug: ch.slug,
       title: ch.title,
       order: ch.order,
-      lessons: lessons.map((l) => ({
-        id: l.id,
-        slug: l.slug,
-        title: l.title,
-        order: l.order,
-        url: formatPath(`/courses/${course.slug}/${ch.slug}/${l.slug}`),
-        isActive: l.slug === activeLessonSlug
-      }))
+      articles: navItems,
+      lessons: navItems
     };
   });
 
   return {
+    title: course.title,
     courseTitle: course.title,
     courseSlug: course.slug,
+    modules: navChapters,
     chapters: navChapters,
     activeChapterSlug,
     activeLessonSlug

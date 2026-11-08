@@ -45,11 +45,11 @@ const difficultyVariant = {
     </div>
     <div class="flex items-center gap-1.5">
       <Layers className="w-4 h-4 text-brand" />
-      <span>{chapterCount} chapters</span>
+      <span>{chapterCount} {chapterCount === 1 ? 'module' : 'modules'}</span>
     </div>
     <div class="flex items-center gap-1.5">
       <BookOpen className="w-4 h-4 text-brand" />
-      <span>{lessonCount} lessons</span>
+      <span>{lessonCount} {lessonCount === 1 ? 'article' : 'articles'}</span>
     </div>
   </div>
 </header>

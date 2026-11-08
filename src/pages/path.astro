@@ -1,0 +1,263 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CurriculumFlowGraph from '@/components/visualization/CurriculumFlowGraph';
+import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
+import { getAllChapters } from '@/lib/content/chapter-loader';
+import { getLessonsByChapterId } from '@/lib/content/lesson-loader';
+import { formatPath } from '@/lib/utilities/url';
+import { ArrowRight, Layers, Cpu, Shield, Zap, Sparkles } from 'lucide-react';
+
+const chapters = getAllChapters();
+const activeChapters = chapters.map((ch) => ({
+  ...ch,
+  lessons: getLessonsByChapterId(ch.id)
+}));
+
+const breadcrumbs = [
+  { label: 'Structured Path' }
+];
+
+const modules = [
+  {
+    moduleNumber: '01',
+    title: 'Foundations of Networked Systems',
+    description: 'Learn how clients and servers exchange data, multiplex sockets, resolve domain names, and establish transport invariants.',
+    lessons: [
+      {
+        number: '01.01',
+        title: 'Introduction to Client-Server Architecture',
+        description: 'Deconstructing the fundamental communication paradigm that powers the modern internet.',
+        time: '7m',
+        tag: 'Interactive',
+        url: formatPath('/courses/system-architecture-fundamentals/client-server-architecture/introduction-to-client-server')
+      },
+      {
+        number: '01.02',
+        title: 'Request Lifecycle & Transport Protocols',
+        description: 'Tracing a network packet from socket allocation to application dispatch and transport acknowledgment.',
+        time: '9m',
+        tag: 'Workflow',
+        url: formatPath('/courses/system-architecture-fundamentals/client-server-architecture/request-lifecycle-and-protocols')
+      },
+      {
+        number: '01.03',
+        title: 'DNS: How Domain Names Find Servers',
+        description: 'Hierarchical tree resolution, recursive resolvers, root servers, and TTL caching failure modes.',
+        time: '8m',
+        tag: 'Simulate',
+        url: formatPath('/courses/system-architecture-fundamentals/network-fundamentals/dns-resolution-and-sockets')
+      }
+    ]
+  },
+  {
+    moduleNumber: '02',
+    title: 'Infrastructure & Linux Runtime',
+    description: 'How operating systems manage file descriptors, container isolation, and sub-millisecond in-memory caching.',
+    lessons: [
+      {
+        number: '02.01',
+        title: 'Inside a Linux Server: Epoll & File Descriptors',
+        description: 'Why epoll enabled the C10K concurrency breakthrough.',
+        time: '12m',
+        tag: 'Planned'
+      },
+      {
+        number: '02.02',
+        title: 'Docker Internals: Namespaces, Cgroups & OverlayFS',
+        description: 'How container engines create the illusion of isolated operating systems.',
+        time: '14m',
+        tag: 'Planned'
+      },
+      {
+        number: '02.03',
+        title: 'Redis: In-Memory Caching & Eviction Policies',
+        description: 'Cache-aside, write-through, and thundering herd mitigation under traffic surges.',
+        time: '15m',
+        tag: 'Simulate'
+      }
+    ]
+  },
+  {
+    moduleNumber: '03',
+    title: 'Distributed Systems & Concurrency',
+    description: 'Asynchronous workers, message brokers, commit logs, database replication, and horizontal sharding.',
+    lessons: [
+      {
+        number: '03.01',
+        title: 'Asynchronous Queues & Dead Letter Exchanges',
+        description: 'Decoupling ingestion spikes from backend processing with message brokers.',
+        time: '12m',
+        tag: 'Planned'
+      },
+      {
+        number: '03.02',
+        title: 'Kafka: Distributed Commit Logs & Partitioning',
+        description: 'Sequential disk I/O, consumer offset management, and at-least-once delivery.',
+        time: '16m',
+        tag: 'Planned'
+      }
+    ]
+  },
+  {
+    moduleNumber: '04',
+    title: 'Production Engineering & Reliability',
+    description: 'Algorithms and architectural patterns that keep production clusters stable under extreme load.',
+    lessons: [
+      {
+        number: '04.01',
+        title: 'Rate Limiting: Token Bucket vs Sliding Window',
+        description: 'Protecting upstream APIs from malicious surges and resource starvation.',
+        time: '10m',
+        tag: 'Simulate'
+      },
+      {
+        number: '04.02',
+        title: 'Circuit Breakers & Cascading Outages',
+        description: 'Failing fast to preserve database health and prevent retry storms.',
+        time: '11m',
+        tag: 'Simulate'
+      }
+    ]
+  },
+  {
+    moduleNumber: '05',
+    title: 'Real-World System Design Breakdowns',
+    description: 'End-to-end architectural blueprints of production applications deconstructed step-by-step.',
+    lessons: [
+      {
+        number: '05.01',
+        title: 'Design a High-Throughput URL Shortener',
+        description: 'Base62 hashing, collision handling, distributed ID generators, and high-read caching.',
+        time: '18m',
+        tag: 'Case Study'
+      },
+      {
+        number: '05.02',
+        title: 'Design Real-Time Chat & Connection Managers',
+        description: 'WebSocket gateway pooling, ephemeral state management, and pub/sub routing.',
+        time: '20m',
+        tag: 'Case Study'
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="The Structured Path — Complexity"
+  description="From one server to distributed systems. A step-by-step system design curriculum with interactive simulations."
+>
+  <div class="max-w-[1080px] mx-auto px-4 sm:px-8 py-10">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <!-- Page Header (sys0 style) -->
+    <header class="mb-12 pb-8 border-b border-border-subtle">
+      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-brand-subtle border border-brand-border text-brand font-mono text-xs mb-4">
+        <Sparkles class="w-3.5 h-3.5" />
+        <span>SYSTEM DESIGN FROM ZERO TO SCALE</span>
+      </div>
+
+      <h1 class="font-editorial text-4xl sm:text-6xl font-bold text-text-primary tracking-tight mb-4">
+        The System Design Path
+      </h1>
+
+      <p class="font-technical text-lg text-text-secondary max-w-2xl leading-relaxed">
+        A structured progression through distributed systems engineering, module by module: from sockets and single-server bottlenecks to global consensus and fault tolerance.
+      </p>
+    </header>
+
+    <!-- Visual Interactive Dependency Graph -->
+    <div class="mb-16">
+      <CurriculumFlowGraph client:load />
+    </div>
+
+    <!-- Modules List (sys0 style) -->
+    <div class="space-y-12">
+      {modules.map((mod) => (
+        <section class="border-t border-border-subtle pt-8">
+          <div class="flex items-baseline gap-3 mb-2">
+            <span class="font-mono text-xs font-bold text-brand uppercase tracking-wider">
+              MODULE {mod.moduleNumber}
+            </span>
+            <span class="text-border-strong select-none">/</span>
+            <span class="font-technical text-xs text-text-muted uppercase tracking-wider">
+              {mod.lessons.length} topics
+            </span>
+          </div>
+
+          <h2 class="font-editorial text-2xl sm:text-3xl font-bold text-text-primary mb-2">
+            {mod.title}
+          </h2>
+
+          <p class="text-sm text-text-secondary font-technical max-w-2xl mb-6">
+            {mod.description}
+          </p>
+
+          <!-- Lesson Items -->
+          <div class="divide-y divide-border-subtle border border-border-subtle rounded-xl bg-surface overflow-hidden">
+            {mod.lessons.map((lesson) => (
+              <div class="group p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-surface-elevated/60 transition-colors">
+                <div class="flex items-start gap-4">
+                  <span class="font-mono text-xs text-text-muted mt-0.5 w-10 shrink-0">
+                    {lesson.number}
+                  </span>
+
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="font-technical text-sm font-semibold text-text-primary group-hover:text-brand transition-colors">
+                        {lesson.title}
+                      </span>
+                      {lesson.tag === 'Simulate' && (
+                        <span class="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/20">
+                          Simulate
+                        </span>
+                      )}
+                      {lesson.tag === 'Workflow' && (
+                        <span class="font-mono text-[10px] text-purple-400 bg-purple-500/10 px-1.5 py-0.2 rounded border border-purple-500/20">
+                          Workflow
+                        </span>
+                      )}
+                      {lesson.tag === 'Interactive' && (
+                        <span class="font-mono text-[10px] text-cyan-400 bg-cyan-500/10 px-1.5 py-0.2 rounded border border-cyan-500/20">
+                          Interactive
+                        </span>
+                      )}
+                      {lesson.tag === 'Planned' && (
+                        <span class="font-mono text-[10px] text-text-muted bg-surface-elevated px-1.5 py-0.2 rounded border border-border-subtle">
+                          Coming Soon
+                        </span>
+                      )}
+                    </div>
+                    <p class="text-xs text-text-secondary font-technical line-clamp-1">
+                      {lesson.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 pl-14 sm:pl-0 shrink-0 self-start sm:self-center">
+                  <span class="font-mono text-xs text-text-muted">
+                    {lesson.time}
+                  </span>
+
+                  {lesson.url ? (
+                    <a
+                      href={lesson.url}
+                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border-subtle bg-surface hover:border-brand text-xs font-medium text-text-primary hover:text-brand transition-colors shadow-sm"
+                    >
+                      <span>Read</span>
+                      <ArrowRight class="w-3.5 h-3.5" />
+                    </a>
+                  ) : (
+                    <span class="text-xs font-mono text-text-muted opacity-40">
+                      Draft
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

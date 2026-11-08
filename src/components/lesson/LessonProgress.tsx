@@ -39,12 +39,12 @@ export default function LessonProgress({ courseSlug, chapterSlug, lessonId }: Pr
     <div className="flex items-center justify-between p-4 my-6 rounded-lg border border-border-subtle bg-surface-elevated">
       <div>
         <div className="font-technical text-sm font-semibold text-text-primary">
-          {isCompleted ? 'Lesson Completed' : 'Finished this lesson?'}
+          {isCompleted ? 'Article Read' : 'Finished this article?'}
         </div>
         <p className="text-xs text-text-muted mt-0.5">
           {isCompleted
-            ? 'Your completion status has been saved in your local browser.'
-            : 'Mark as completed to track your learning journey through this course.'}
+            ? 'Saved to your local browser storage.'
+            : 'Mark as read to track your progress across the structured architecture path.'}
         </p>
       </div>
 
@@ -53,19 +53,19 @@ export default function LessonProgress({ courseSlug, chapterSlug, lessonId }: Pr
         onClick={handleToggle}
         className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-xs transition-all ${
           isCompleted
-            ? 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 hover:bg-green-500/20'
+            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20'
             : 'bg-brand text-white hover:bg-brand-hover shadow-sm'
         }`}
       >
         {isCompleted ? (
           <>
-            <CheckCircle2 className="w-4 h-4" />
-            <span>Completed</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>Marked as Read</span>
           </>
         ) : (
           <>
             <Circle className="w-4 h-4" />
-            <span>Mark Complete</span>
+            <span>Mark as Read</span>
           </>
         )}
       </button>

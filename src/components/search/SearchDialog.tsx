@@ -103,7 +103,7 @@ export default function SearchDialog({ documents, isOpenDefault = false }: Props
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-mono text-[10px] uppercase text-text-muted">
-                            {doc.type}
+                            {doc.type === 'course' ? 'Track' : doc.type === 'chapter' ? 'Module' : 'Article'}
                           </span>
                           {doc.courseTitle && (
                             <span className="text-[10px] text-text-muted truncate">

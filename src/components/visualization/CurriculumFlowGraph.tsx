@@ -204,7 +204,7 @@ export default function CurriculumFlowGraph() {
               href={active.courseUrl}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-brand text-white hover:bg-brand-hover text-xs font-semibold transition-colors self-start sm:self-center whitespace-nowrap shadow-sm"
             >
-              <span>Explore Phase Course</span>
+              <span>Explore Phase Guides</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
           )}

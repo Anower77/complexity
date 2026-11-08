@@ -31,15 +31,14 @@ const {
 } = Astro.props;
 
 const breadcrumbs = [
-  { label: 'Courses', href: formatPath('/courses') },
-  { label: courseTitle, href: formatPath(`/courses/${navigation.courseSlug}`) },
+  { label: 'Structured Path', href: formatPath('/path') },
   { label: chapterTitle },
   { label: lesson.title }
 ];
 ---
 
 <BaseLayout
-  title={`${lesson.title} — ${courseTitle} | Complexity`}
+  title={`${lesson.title} — Complexity`}
   description={lesson.description}
   hideFooter={true}
 >

@@ -8,14 +8,14 @@ describe('Navigation Engine', () => {
     const nav = buildCourseNavigation(courseSlug, 'client-server-architecture', 'introduction-to-client-server');
     expect(nav).not.toBeNull();
     expect(nav?.courseSlug).toBe(courseSlug);
-    expect(nav?.chapters.length).toBeGreaterThanOrEqual(2);
+    expect(nav?.chapters?.length).toBeGreaterThanOrEqual(2);
 
-    const firstChapter = nav?.chapters[0];
+    const firstChapter = nav?.chapters?.[0];
     expect(firstChapter?.slug).toBe('client-server-architecture');
-    expect(firstChapter?.lessons.length).toBeGreaterThanOrEqual(2);
+    expect(firstChapter?.lessons?.length).toBeGreaterThanOrEqual(2);
 
     // Active lesson check
-    const activeLesson = firstChapter?.lessons.find((l) => l.slug === 'introduction-to-client-server');
+    const activeLesson = firstChapter?.lessons?.find((l) => l.slug === 'introduction-to-client-server');
     expect(activeLesson?.isActive).toBe(true);
   });
 

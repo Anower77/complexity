@@ -1,20 +1,24 @@
 # Complexity
 
-> An interactive, course-oriented engineering education platform for systems engineering, backend infrastructure, and large-scale distributed architecture.
+> Open engineering knowledge publication and interactive system design reference. Deconstruct backend infrastructure, network lifecycles, and distributed architecture through first-principles guides and interactive flow diagrams.
 
-Website: [complexity.github.io](https://complexity.github.io) (Production deployment target)  
-GitHub Pages: [https://anower77.github.io/complexity/](https://anower77.github.io/complexity/)
+Production URL: [https://anower77.github.io/complexity/](https://anower77.github.io/complexity/)
 
 ---
 
 ## 1. Product Overview
 
-**Complexity** is a structured, course-oriented technical learning platform inspired by the pedagogical clarity and information architecture of modern engineering references like ByteByteGo. 
+**Complexity** is a free, open technical engineering publication and system architecture reference. We believe developers learn best when complex distributed primitives are deconstructed from mechanical first principles rather than black-box summaries or paid course offerings.
 
-Instead of fragmented blog posts or superficial summaries, Complexity organizes engineering knowledge into cohesive **Courses**, **Chapters**, and **Lessons**. 
+The platform provides:
+- **Zero Course Selling**: Free, open technical blog and system design guide. No paywalls, no enrollments, no subscriptions.
+- **Structured Learning Paths**: Sequential 6-phase engineering curriculum showing concepts, prerequisites, and dependencies.
+- **Interactive Visual Simulators**: Live packet workflows, socket allocations, and failure-injection sandboxes (traffic surges, cache evictions, cascading failures).
+- **Articles & Deep Dives**: Comprehensive architectural breakdowns answering the 7 fundamental questions behind production systems.
+- **3-Column Technical Reading Experience**: Left module sidebar, focused reading canvas with SVG diagrams, right table of contents with reading progress.
 
-Each lesson deconstructs software systems from first principles, answering seven core questions:
-1. **Why does it exist?** (The historical bottleneck or design wall)
+Each guide deconstructs software systems from first principles, answering seven core questions:
+1. **Why does it exist?** (The historical bottleneck or hardware boundary)
 2. **What problem does it solve?** (The precise engineering pain point)
 3. **How does it work internally?** (Sockets, buffers, memory hierarchy, state machines)
 4. **What happens under real traffic?** (Concurrency models, connection pooling, queue depth)

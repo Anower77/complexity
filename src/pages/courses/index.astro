@@ -1,45 +1,6 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import CourseCard from '@/components/course/CourseCard.astro';
-import Breadcrumbs from '@/components/navigation/Breadcrumbs.astro';
-import { getAllCourses } from '@/lib/content/course-loader';
-import { getAllLessons } from '@/lib/content/lesson-loader';
 import { formatPath } from '@/lib/utilities/url';
 
-const courses = getAllCourses();
-const allLessons = getAllLessons();
-
-const breadcrumbs = [
-  { label: 'Courses' }
-];
+// Redirect /courses to the primary articles publication directory
+return Astro.redirect(formatPath('/articles'));
 ---
-
-<BaseLayout
-  title="Courses — Complexity"
-  description="Explore our course-oriented technical learning library covering systems engineering, networking, and distributed architecture."
->
-  <div class="max-w-layout mx-auto px-4 sm:px-6 py-10">
-    <Breadcrumbs items={breadcrumbs} />
-
-    <header class="mb-10 pb-6 border-b border-border-subtle">
-      <div class="font-mono text-xs text-brand font-semibold uppercase tracking-wider mb-2">
-        COURSE DIRECTORY
-      </div>
-      <h1 class="font-editorial text-3xl sm:text-5xl font-bold text-text-primary tracking-tight mb-3">
-        Engineering Courses
-      </h1>
-      <p class="text-base text-text-secondary max-w-2xl font-technical">
-        Structured technical courses built from first principles. Each course contains chapters, focused lessons, interactive diagrams, and scenario-based knowledge checks.
-      </p>
-    </header>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {courses.map((course) => (
-        <CourseCard
-          course={course}
-          lessonCount={allLessons.filter((l) => l.courseId === course.slug).length}
-        />
-      ))}
-    </div>
-  </div>
-</BaseLayout>

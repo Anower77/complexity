@@ -32,7 +32,7 @@ export default function CourseProgress({ courseSlug, totalLessons, firstLessonUr
   }, [courseSlug]);
 
   const handleReset = () => {
-    if (window.confirm('Reset all progress for this course?')) {
+    if (window.confirm('Reset reading progress for this track?')) {
       resetCourseProgress(courseSlug);
       setCompletedLessons([]);
       setLastVisited(null);
@@ -52,7 +52,7 @@ export default function CourseProgress({ courseSlug, totalLessons, firstLessonUr
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className="font-mono text-xs font-semibold text-text-muted uppercase tracking-wider">
-              YOUR PROGRESS
+              READING PROGRESS
             </span>
             <span className="font-mono text-xs font-bold text-brand">
               {percentage}%
@@ -67,7 +67,7 @@ export default function CourseProgress({ courseSlug, totalLessons, firstLessonUr
           </div>
 
           <p className="text-xs text-text-muted mt-2 font-mono">
-            {completedLessons.length} of {totalLessons} lessons completed
+            {completedLessons.length} of {totalLessons} articles read
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export default function CourseProgress({ courseSlug, totalLessons, firstLessonUr
             className="px-5 py-2.5 rounded-md bg-brand text-white hover:bg-brand-hover text-sm font-medium transition-colors shadow-sm flex items-center gap-2"
           >
             <Play className="w-4 h-4 fill-current" />
-            <span>{isStarted ? 'Continue Learning' : 'Start Course'}</span>
+            <span>{isStarted ? 'Continue Reading' : 'Start Reading Track'}</span>
           </a>
         </div>
       </div>

@@ -13,9 +13,9 @@ export default function MobileCourseNavigation({ navigation }: Props) {
   return (
     <div className="md:hidden border-b border-border-subtle bg-surface px-4 py-2.5 flex items-center justify-between">
       <div className="flex items-center gap-2 truncate">
-        <span className="text-xs font-mono text-text-muted">CH:</span>
+        <span className="text-xs font-mono text-text-muted">MOD:</span>
         <span className="text-xs font-semibold text-text-primary truncate">
-          {navigation.activeLessonSlug || 'Course Outline'}
+          {navigation.activeLessonSlug || 'Path Outline'}
         </span>
       </div>
 
@@ -23,7 +23,7 @@ export default function MobileCourseNavigation({ navigation }: Props) {
         type="button"
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-text-secondary bg-surface-elevated border border-border-subtle rounded hover:text-text-primary"
-        aria-label="Open course navigation"
+        aria-label="Open path navigation"
       >
         <Menu className="w-3.5 h-3.5" />
         <span>Outline</span>
@@ -38,7 +38,7 @@ export default function MobileCourseNavigation({ navigation }: Props) {
 
           <div className="relative z-10 w-4/5 max-w-sm bg-surface h-full shadow-2xl flex flex-col">
             <div className="flex items-center justify-between p-3 border-b border-border-subtle">
-              <span className="font-mono text-xs font-bold text-text-primary">COURSE NAVIGATION</span>
+              <span className="font-mono text-xs font-bold text-text-primary">STRUCTURED PATH</span>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
